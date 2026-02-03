@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listado de Reservas</title>
+  <link rel="stylesheet" href="a.css">
+  <link rel="stylesheet" href="reservas.css">
+</head>
+<body>
+
+  <header class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+        <a href="carteleradmin.html">
+            <img src="UUU.png">
+        </a>
+        <span class="admin-span">ADMIN</span>
+        </div>
+
+        <!-- Menú principal -->
+        <div class="main-menu">
+        <ul>
+            <li><a href="carteleradmin.html">Películas</a></li>
+            <li><a href="butadmin.html">Butacas</a></li>
+            <li><a href="reservas.html">Reservas</a></li>
+            <li><a href="candyadmin.html">Candy</a></li>
+        </ul>
+        </div>
+
+        <!-- Opciones a la derecha -->
+        <div class="right-menu">
+         <a href="#">Cerrar sesión</a>
+        </div>
+  </header>
+
+  <div class="contenedor">
+    <h1>Listado de Reservas</h1>
+    <div class="filtros">
+      <label for="codigo">Buscar por código:</label>
+      <input type="text" id="codigo" placeholder="Ej: ABC123">
+
+      <label for="estado">Estado:</label>
+      <select id="estado">
+        <option value="">Todos</option>
+        <option value="canjeada">Canjeadas</option>
+        <option value="nocanjeada">No canjeadas</option>
+      </select>
+
+      <button id="filtrar">Filtrar</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre de Usuario</th>
+          <th>Cuenta</th>
+          <th>Código de Reserva</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 LCU. Contactanos en:</p>
+            <div class="footer-links">
+                <a href="#" ><img src="-inst.png" ></a>
+                <a href="#" ><img src="-x.png" class="x" ></a>
+                <a href="#" ><img src="-mail.png" class="mail" ></a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
