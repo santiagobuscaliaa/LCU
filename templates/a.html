@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>
+    {% block title %}Cine LCU{% endblock %}
+  </title>
+  
+  <!-- CSS Base -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/front/a.css') }}">
+  
+  <!-- CSS Específicos -->
+  {% block css %}
+  {% endblock %}
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <!-- Logo -->
+    <div class="logo">
+      <a href="{{ url_for('cartelera') }}">
+        <img src="{{ url_for('static', filename='img/UUU.png') }}" alt="Logo LCU">
+      </a>
+    </div>
+
+    <!-- Menú principal -->
+    <div class="main-menu">
+      <ul>
+        <li><a href="{{ url_for('cartelera') }}">Películas</a></li>
+        <li><a href="{{ url_for('candy') }}">Candy</a></li>
+      </ul>
+    </div>
+
+    <!-- Opciones a la derecha -->
+    <div class="right-menu">
+      {% if session.get('username') %}
+        <!-- Usuario logueado -->
+        <span>Hola, {{ session.get('nombres') }}</span>
+        <a href="{{ url_for('usuario') }}">
+          <img src="{{ url_for('static', filename='img/-usuario.jpg') }}" class="icon" alt="Usuario">
+        </a>
+      {% else %}
+        <!-- Usuario no logueado -->
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('usuario') }}">
+          <img src="{{ url_for('static', filename='img/-usuario.jpg') }}" class="icon" alt="Usuario">
+        </a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- MENSAJES FLASH -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- CONTENIDO -->
+  {% block content %}
+  {% endblock %}
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2025 LCU. Contactanos en:</p>
+      <div class="footer-links">
+        <a href="#"><img src="{{ url_for('static', filename='img/-inst.png') }}" alt="Instagram"></a>
+        <a href="#"><img src="{{ url_for('static', filename='img/-x.png') }}" class="x" alt="X"></a>
+        <a href="#"><img src="{{ url_for('static', filename='img/-mail.png') }}" class="mail" alt="Email"></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  {% block scripts %}
+  {% endblock %}
+</body>
+</html>

@@ -1,0 +1,90 @@
+{% extends "a.html" %}
+
+{% block title %}Mi Cuenta - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/usuario.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h3 class="sidebar-title">MI CUENTA</h3>
+        <nav class="menu">
+            <a href="{{ url_for('usuario') }}" class="menu-item activo">Editar usuario</a>
+            <a href="{{ url_for('historial') }}" class="menu-item">Historial de compras</a>
+            <a href="{{ url_for('logout') }}" class="menu-item cerrar">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="content">
+        <h1 class="content-title">Editar usuario</h1>
+        
+        <!-- Mensajes de error/éxito -->
+        {% if param and param.get('error_msg') %}
+            <p class="error">{{ param.get('error_msg') }}</p>
+        {% endif %}
+        
+        {% if param and param.get('succes_msg') %}
+            <p class="success">{{ param.get('succes_msg') }}</p>
+        {% endif %}
+
+        <form class="form" action="{{ url_for('actualizar_usuario_route') }}" method="POST">
+            <h2>Datos personales</h2>
+            
+            <div class="field">
+                <label for="nombres">Nombres</label>
+                <input id="nombres" name="nombres" type="text" 
+                       value="{{ param.usuario.nombres if param.usuario else '' }}" required>
+            </div>
+
+            <div class="field">
+                <label for="apellidos">Apellidos</label>
+                <input id="apellidos" name="apellidos" type="text" 
+                       value="{{ param.usuario.apellidos if param.usuario else '' }}" required>
+            </div>
+
+            <div class="field">
+                <label for="fecha">Fecha de nacimiento</label>
+                <input id="fecha" name="fecha" type="date" 
+                       value="{{ param.usuario.nacimiento if param.usuario else '' }}" disabled>
+            </div>
+
+            <h2>Datos de acceso</h2>
+
+            <div class="field">
+                <label for="email">Correo electrónico</label>
+                <input id="email" name="email" type="email" autocomplete="email" 
+                       value="{{ param.usuario.email if param.usuario else '' }}" disabled>
+            </div>
+
+            <div class="field">
+                <label for="cont">Contraseña (dejar en blanco para no cambiar)</label>
+                <input id="cont" name="cont" type="password" autocomplete="new-password">
+            </div>
+
+            <div class="field">
+                <label for="telefono">Teléfono</label>
+                <input id="telefono" name="telefono" type="tel" inputmode="tel" 
+                       value="{{ param.usuario.telefono if param.usuario else '' }}" required>
+            </div>
+
+            <div class="boton-container"> 
+                <input type="submit" class="boton" value="Actualizar">
+            </div>
+        </form>
+    </main>
+    
+    <!-- Caja Avatar -->
+    <aside class="sidebar avatar-box">
+        <h3 class="sidebar-title">Avatar</h3>
+        <div class="avatar-preview">
+            <img src="{{ url_for('static', filename='img/-usuario.jpg') }}" alt="Avatar actual">
+        </div>
+        <input type="file" id="avatar" hidden>
+        <label for="avatar" class="boton">Seleccionar imagen</label>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends "a.html" %}
+
+{% block title %}Candy - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/candy.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1>Candy 🍿🥤</h1>
+
+<div class="contenedor">
+    {% if param.productos %}
+        {% set categorias = {} %}
+        {% for producto in param.productos %}
+            {% if producto.categoría not in categorias %}
+                {% set _ = categorias.update({producto.categoría: []}) %}
+            {% endif %}
+            {% set _ = categorias[producto.categoría].append(producto) %}
+        {% endfor %}
+        
+        <!-- Pochoclos -->
+        {% if categorias.get('Pochoclos') %}
+        <div class="bloque">
+            <h3>Pochoclos</h3>
+            <img src="{{ url_for('static', filename='img/-pocho.jpg') }}" alt="Pochoclos">
+            
+            <details>
+                <summary>Mostrar Opciones</summary>
+                <fieldset>
+                    <legend>Tipo</legend>
+                    <label><input type="radio" name="tipop" value="dulce"> Dulces</label>
+                    <label><input type="radio" name="tipop" value="salado"> Salado</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for producto in categorias['Pochoclos'] %}
+                        <label>
+                            <input type="radio" name="tamanop" value="{{ producto.id }}" data-precio="{{ producto.precio }}">
+                            {{ producto.nombre }} (${{ producto.precio }})
+                        </label>
+                    {% endfor %}
+                </fieldset>
+
+                <input type="submit" value="Agregar al carrito" id="carrito1">
+                <small id="error-candy1" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+
+        <!-- Bebidas -->
+        {% if categorias.get('Bebidas') %}
+        <div class="bloque">
+            <h3>Bebidas</h3>
+            <img src="{{ url_for('static', filename='img/-bebi.jpg') }}" alt="Bebidas">
+
+            <details>
+                <summary>Mostrar Opciones</summary>
+                <fieldset>
+                    <legend>Tipo</legend>
+                    <label><input type="radio" name="tipob" value="coca"> Coca</label>
+                    <label><input type="radio" name="tipob" value="sprite"> Sprite</label>
+                    <label><input type="radio" name="tipob" value="agua"> Agua</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for producto in categorias['Bebidas'] %}
+                        <label>
+                            <input type="radio" name="tamanob" value="{{ producto.id }}" data-precio="{{ producto.precio }}">
+                            {{ producto.nombre }} (${{ producto.precio }})
+                        </label>
+                    {% endfor %}
+                </fieldset>
+
+                <input type="submit" value="Agregar al carrito" id="carrito2">
+                <small id="error-candy2" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+
+        <!-- Snacks -->
+        {% if categorias.get('Snacks') %}
+        <div class="bloque">
+            <h3>Snacks</h3>
+            <img src="{{ url_for('static', filename='img/-snacks.webp') }}" alt="Snacks">
+
+            <details>
+                <summary>Mostrar Opciones</summary>
+                <fieldset>
+                    <legend>Tipo</legend>
+                    <label><input type="radio" name="snack" value="papas"> Papas</label>
+                    <label><input type="radio" name="snack" value="nachos"> Nachos</label>
+                    <label><input type="radio" name="snack" value="chocolate"> Chocolate</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for producto in categorias['Snacks'] %}
+                        <label>
+                            <input type="radio" name="tamanos" value="{{ producto.id }}" data-precio="{{ producto.precio }}">
+                            {{ producto.nombre }} (${{ producto.precio }})
+                        </label>
+                    {% endfor %}
+                </fieldset>
+
+                <input type="submit" value="Agregar al carrito" id="carrito3">
+                <small id="error-candy3" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+
+        <!-- Combos -->
+        {% if categorias.get('Combos') %}
+        <div class="bloque">
+            <h3>Combos</h3>
+            <img src="{{ url_for('static', filename='img/-combos.jpg') }}" alt="Combos">
+
+            <details>
+                <summary>Mostrar Opciones</summary>
+                <fieldset>
+                    <legend>Opción</legend>
+                    <label><input type="radio" name="combo" value="cine1"> Pochoclo + Bebida</label><br>
+                    <label><input type="radio" name="combo" value="cine2"> Pochoclo + Bebida + Snack</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for producto in categorias['Combos'] %}
+                        <label>
+                            <input type="radio" name="tamanoc" value="{{ producto.id }}" data-precio="{{ producto.precio }}">
+                            {{ producto.nombre }} (${{ producto.precio }})
+                        </label>
+                    {% endfor %}
+                </fieldset>
+
+                <input type="submit" value="Agregar al carrito" id="carrito4">
+                <small id="error-candy4" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+    {% else %}
+        <p>No hay productos disponibles en este momento.</p>
+    {% endif %}
+    
+    <!-- Botón para continuar al resumen -->
+    <div style="text-align: center; margin: 20px;">
+        <a href="{{ url_for('resumen') }}" class="boton">Ir al Resumen</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/front/candy.js') }}"></script>
+{% endblock %}

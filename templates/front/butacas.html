@@ -1,0 +1,70 @@
+{% extends "a.html" %}
+
+{% block title %}Seleccionar butacas - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/butacas.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="contenedor">
+    <div class="poster">
+        {% if param.pelicula %}
+            <h1 class="titulo">{{ param.pelicula.titulo }}</h1>
+            <img class="img" src="{{ url_for('static', filename='img/' ~ param.pelicula.poster) }}" alt="Póster">
+        {% endif %}
+        
+        {% if param.funcion %}
+            <p><strong>Día:</strong> {{ param.funcion.dia }}</p>
+            <p><strong>Horario:</strong> {{ param.funcion.horario }}</p>
+            <p><strong>Formato:</strong> {{ param.funcion.formato }}</p>
+            <p><strong>Sala:</strong> {{ param.funcion.sala }}</p>
+        {% endif %}
+        
+        <a class="boton" href="{{ url_for('candy') }}">Continuar</a> 
+    </div>
+
+    <div class="box">
+        <div class="seleccion">
+            <h1>SELECCIONE BUTACAS</h1>
+            <p>Seleccione {{ param.cantidad_entradas }} butaca(s)</p>
+        </div>
+        
+        <div class="pantalla">____________________________________________________________
+            <div class="linea-pantalla"></div>
+            <p>PANTALLA</p>
+        </div>
+        
+        <!-- Generar butacas dinámicamente -->
+        {% set filas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] %}
+        {% for fila in filas %}
+            <!-- FILA {{ fila }} -->
+            {% for numero in range(1, 13) %}
+                {% set butaca_id = fila ~ numero|string %}
+                {% if butaca_id in param.butacas_ocupadas %}
+                    <button id="{{ butaca_id }}" class="ocupada" disabled>
+                        <p>{{ butaca_id }}</p>
+                    </button>
+                {% else %}
+                    <button id="{{ butaca_id }}">
+                        <p>{{ butaca_id }}</p>
+                    </button>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        
+        <!-- Input oculto para enviar butacas seleccionadas -->
+        <form id="formButacas" action="{{ url_for('procesar_butacas_route') }}" method="POST" style="display:none;">
+            <input type="hidden" name="butacas" id="butacasInput">
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Pasar cantidad de entradas al JS
+    var intTotal = {{ param.cantidad_entradas }};
+</script>
+<script src="{{ url_for('static', filename='js/front/butacas.js') }}"></script>
+{% endblock %}
