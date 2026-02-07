@@ -75,7 +75,7 @@ button p {
   display: flex;
   justify-content: center;
   gap: 12px;
-  padding: 15px;
+  padding: 10px;
   background: var(--box);
   border-radius: 8px;
 }
@@ -87,6 +87,7 @@ button p {
   border-radius: 8px;
   border: none;
   font-size: 14px;
+  margin: 10px;
 }
 
 .buscador input {

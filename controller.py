@@ -8,7 +8,7 @@
     - Lógica de negocio (cartelera, reservas, candy, etc.)
 '''
 
-from flask import request, session, redirect, render_template, flash, url_for
+from flask import request, session, redirect, render_template, flash, url_for, jsonify
 from datetime import datetime
 from model import *
 from werkzeug.utils import secure_filename
@@ -51,7 +51,7 @@ def getRequest(diResult):
 
 def cargarSesion(dicUsuario):
     '''### Información:
-        Carga los datos del usuario en la sesión
+        Carga los datos del usuario en la sesión incluyendo avatar
         Recibe 'dicUsuario' un diccionario con los datos del usuario
     '''
     session['id_usuario'] = dicUsuario['id']
@@ -59,7 +59,7 @@ def cargarSesion(dicUsuario):
     session['apellidos'] = dicUsuario['apellidos']
     session['username'] = dicUsuario['username']  # email
     session['telefono'] = dicUsuario.get('telefono', '')
-    session['imagen'] = dicUsuario.get('imagen', '')
+    session['avatar'] = dicUsuario.get('avatar', '')  # ✅ Avatar
     session['rol'] = dicUsuario.get('rol', 'cliente')
 
 
@@ -169,6 +169,7 @@ def buscar_peliculas(param, request):
 # + + + DÍA Y HORARIO + + + + + + + + + + + + + + + + + + + + + + + + + +
 ##########################################################################
 
+
 def dyh_pagina(param, id_pelicula):
     '''### Información:
         Carga la página de selección de día y horario
@@ -184,12 +185,34 @@ def dyh_pagina(param, id_pelicula):
     
     param['pelicula'] = pelicula
     
-    # Obtener funciones disponibles para esta película
-    param['funciones'] = obtenerFuncionesXPelicula(id_pelicula)
+    # Obtener TODAS las funciones disponibles para esta película
+    funciones = obtenerFuncionesXPelicula(id_pelicula)
+    
+    if funciones:
+        param['funciones'] = funciones
+        
+        # Orden correcto de días de la semana
+        orden_dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        
+        # Extraer días únicos de las funciones
+        dias_disponibles = list(set([f['dia'] for f in funciones]))
+        
+        # Ordenar según orden_dias
+        dias = [dia for dia in orden_dias if dia in dias_disponibles]
+        
+        # Extraer formatos únicos
+        formatos = sorted(list(set([f['formato'] for f in funciones])))
+        
+        param['dias_disponibles'] = dias
+        param['formatos_disponibles'] = formatos
+    else:
+        param['funciones'] = []
+        param['dias_disponibles'] = []
+        param['formatos_disponibles'] = []
+    
     param['sesion_activa'] = haySesion()
     
     return render_template('front/dyh.html', param=param)
-
 
 def procesar_dyh(param, request):
     '''### Información:
@@ -214,6 +237,10 @@ def procesar_dyh(param, request):
     id_pelicula = session.get('pelicula_seleccionada')
     funciones = obtenerFuncionesXPelicula(id_pelicula)
     
+    # Protección: si no hay funciones, devolver lista vacía
+    if not funciones:
+        funciones = []
+    
     funcion_seleccionada = None
     for funcion in funciones:
         if (funcion['dia'] == mirequest.get('dia') and 
@@ -226,9 +253,12 @@ def procesar_dyh(param, request):
         session['id_funcion'] = funcion_seleccionada['id']
         return redirect('/butacas')
     else:
-        flash('No se encontró una función con esos horarios', 'error')
-        return redirect(f'/pelicula/{id_pelicula}')
-
+        # Mostrar mensaje de error más específico
+        if not funciones:
+            flash('Esta película no tiene funciones disponibles en este momento', 'error')
+        else:
+            flash('No se encontró una función con el día, horario y formato seleccionados', 'error')
+        return redirect(f'/dyh/{id_pelicula}')
 
 ##########################################################################
 # + + + BUTACAS + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -237,26 +267,30 @@ def procesar_dyh(param, request):
 def butacas_pagina(param):
     '''### Información:
         Carga la página de selección de butacas
-        Recibe 'param' diccionario de parámetros
-        Retorna el template renderizado
     '''
     if not haySesion():
         return redirect('/login')
     
-    # Verificar que haya una función seleccionada
     if 'id_funcion' not in session:
         return redirect('/cartelera')
     
     id_funcion = session.get('id_funcion')
     id_pelicula = session.get('pelicula_seleccionada')
     
-    # Obtener datos de la película y función
+    # 🔍 DIAGNÓSTICO: Ver qué función se está consultando
+    print(f"\n🎬 Consultando butacas para id_funcion: {id_funcion}\n")
+    
     param['pelicula'] = obtenerPeliculaXId(id_pelicula)
     param['funcion'] = obtenerFuncionXId(id_funcion)
     param['cantidad_entradas'] = session.get('cantidad_entradas', 1)
     
     # Obtener butacas ocupadas
-    param['butacas_ocupadas'] = obtenerButacasOcupadas(id_funcion)
+    butacas_ocupadas = obtenerButacasOcupadas(id_funcion)
+    param['butacas_ocupadas'] = butacas_ocupadas
+    
+    # 🔍 DIAGNÓSTICO: Ver resultado
+    print(f"📊 Butacas ocupadas encontradas: {butacas_ocupadas}\n")
+    
     param['sesion_activa'] = haySesion()
     
     return render_template('front/butacas.html', param=param)
@@ -265,9 +299,6 @@ def butacas_pagina(param):
 def procesar_butacas(param, request):
     '''### Información:
         Procesa la selección de butacas
-        Guarda las butacas en sesión y redirige a candy o resumen
-        Recibe 'param' diccionario de parámetros
-        Recibe 'request' con las butacas seleccionadas
     '''
     if not haySesion():
         return redirect('/login')
@@ -275,16 +306,23 @@ def procesar_butacas(param, request):
     mirequest = {}
     getRequest(mirequest)
     
-    # Las butacas vienen como un array desde el frontend
-    butacas = mirequest.get('butacas', [])
-    if isinstance(butacas, str):
-        butacas = [butacas]
+    butacas_raw = mirequest.get('butacas', '')
+    
+    if isinstance(butacas_raw, str):
+        if ',' in butacas_raw:
+            butacas = [b.strip() for b in butacas_raw.split(',') if b.strip()]
+        elif butacas_raw.strip():
+            butacas = [butacas_raw.strip()]
+        else:
+            butacas = []
+    elif isinstance(butacas_raw, list):
+        butacas = butacas_raw
+    else:
+        butacas = []
     
     session['butacas_seleccionadas'] = butacas
     
-    # Redirigir a candy (opcional) o directo a resumen
     return redirect('/candy')
-
 
 ##########################################################################
 # + + + CANDY + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -306,31 +344,60 @@ def agregar_candy(param, request):
     '''### Información:
         Agrega productos de candy al carrito en sesión
         Recibe 'param' diccionario de parámetros
-        Recibe 'request' con los productos seleccionados
+        Recibe 'request' con el producto_id
+        Retorna JSON con success o error
     '''
     if not haySesion():
-        return redirect('/login')
+        return jsonify({'success': False, 'error': 'Debe iniciar sesión'})
     
     mirequest = {}
     getRequest(mirequest)
+    
+    producto_id = mirequest.get('producto_id')
+    
+    if not producto_id:
+        return jsonify({'success': False, 'error': 'ID de producto no proporcionado'})
+    
+    # Obtener datos del producto desde la BD
+    producto = obtenerProductoCandyXId(int(producto_id))
+    
+    if not producto:
+        return jsonify({'success': False, 'error': 'Producto no encontrado'})
     
     # Inicializar carrito de candy si no existe
     if 'carrito_candy' not in session:
         session['carrito_candy'] = []
     
     # Agregar producto al carrito
-    producto = {
-        'tipo': mirequest.get('tipo'),
-        'tamano': mirequest.get('tamano'),
-        'precio': mirequest.get('precio', 0)
+    item_carrito = {
+        'id': producto['id'],
+        'nombre': producto['nombre'],
+        'tipo': producto['tipo'],
+        'tamaño': producto['tamaño'],
+        'precio': int(producto['precio'])
     }
     
     carrito = session.get('carrito_candy', [])
-    carrito.append(producto)
+    carrito.append(item_carrito)
     session['carrito_candy'] = carrito
     
-    return redirect('/candy')
+    return jsonify({
+        'success': True, 
+        'mensaje': 'Producto agregado al carrito',
+        'total_items': len(carrito)
+    })
 
+def limpiar_carrito():
+    '''Limpia el carrito de candy'''
+    if not haySesion():
+        return jsonify({'success': False, 'error': 'Debe iniciar sesión'})
+    
+    session['carrito_candy'] = []
+    
+    return jsonify({
+        'success': True, 
+        'mensaje': 'Carrito limpiado exitosamente'
+    })
 
 ##########################################################################
 # + + + RESUMEN Y COMPRA + + + + + + + + + + + + + + + + + + + + + + + +
@@ -377,63 +444,78 @@ def resumen_pagina(param):
 def procesar_compra(param, request):
     '''### Información:
         Procesa la compra final
-        Crea el ticket, registra las butacas y guarda en historial
-        Recibe 'param' diccionario de parámetros
-        Recibe 'request'
-        Retorna redirección a historial o confirmación
     '''
     if not haySesion():
         return redirect('/login')
     
-    # Obtener datos de la sesión
-    id_usuario = session.get('id_usuario')
-    id_funcion = session.get('id_funcion')
-    cantidad_entradas = session.get('cantidad_entradas')
-    butacas = session.get('butacas_seleccionadas', [])
-    formato = session.get('formato', '2D')
-    id_formato = 1 if formato == '2D' else 2
-    
-    # Crear el ticket
-    id_ticket = crearTicket(cantidad_entradas, id_funcion, id_formato)
-    
-    if id_ticket:
-        # Agregar las butacas
+    try:
+        id_usuario = session.get('id_usuario')
+        id_funcion = session.get('id_funcion')
+        cantidad_entradas = session.get('cantidad_entradas')
+        butacas = session.get('butacas_seleccionadas', [])
+        formato = session.get('formato', '2D')
+        carrito_candy = session.get('carrito_candy', [])
+        
+        if not id_usuario or not id_funcion or not cantidad_entradas:
+            flash('Faltan datos para procesar la compra', 'error')
+            return redirect('/resumen')
+        
+        id_formato = 1 if formato == '2D' else 2
+        
+        id_ticket = crearTicket(cantidad_entradas, id_funcion, id_formato)
+        
+        if not id_ticket:
+            flash('Error al crear el ticket', 'error')
+            return redirect('/resumen')
+        
         if butacas:
             agregarButacas(id_ticket, butacas)
         
-        # Calcular total
         precio_entrada = obtenerPrecioFormato(id_formato)
-        total = precio_entrada * cantidad_entradas
+        total_entradas = precio_entrada * cantidad_entradas
         
-        # Crear resumen de compra
+        total_candy = 0
+        if carrito_candy:
+            items_validos = [item for item in carrito_candy 
+                           if item.get('precio') and item.get('precio') != 0]
+            if items_validos:
+                total_candy = sum([int(item.get('precio', 0)) for item in items_validos])
+        
+        total = total_entradas + total_candy
+        
         id_resumen = crearResumenCompra(
             id_usuario=id_usuario,
             id_ticket=id_ticket,
-            id_candy=None,  # Por ahora sin candy
-            cantidad_candy=0,
+            id_candy=None,
+            cantidad_candy=len(carrito_candy),
             total=total,
             pagado=1
         )
         
-        if id_resumen:
-            # Agregar al historial
-            agregarAlHistorial(id_usuario, id_resumen)
+        if not id_resumen:
+            flash('Error al crear el resumen de compra', 'error')
+            return redirect('/resumen')
+        
+        if carrito_candy:
+            agregarCandyACompra(id_resumen, carrito_candy)
+        
+        agregarAlHistorial(id_usuario, id_resumen)
+        
+        session.pop('pelicula_seleccionada', None)
+        session.pop('id_funcion', None)
+        session.pop('dia', None)
+        session.pop('formato', None)
+        session.pop('hora', None)
+        session.pop('cantidad_entradas', None)
+        session.pop('butacas_seleccionadas', None)
+        session.pop('carrito_candy', None)
+        
+        flash('¡Compra realizada con éxito!', 'success')
+        return redirect('/historial')
             
-            # Limpiar sesión de compra
-            session.pop('pelicula_seleccionada', None)
-            session.pop('id_funcion', None)
-            session.pop('dia', None)
-            session.pop('formato', None)
-            session.pop('hora', None)
-            session.pop('cantidad_entradas', None)
-            session.pop('butacas_seleccionadas', None)
-            session.pop('carrito_candy', None)
-            
-            flash('¡Compra realizada con éxito!', 'success')
-            return redirect('/historial')
-    
-    flash('Error al procesar la compra', 'error')
-    return redirect('/resumen')
+    except Exception as e:
+        flash(f'Error al procesar la compra: {str(e)}', 'error')
+        return redirect('/resumen')
 
 
 ##########################################################################
@@ -477,7 +559,7 @@ def registrarUsuario(param, request):
         Procesa el registro de un nuevo usuario
         Recibe 'param' diccionario de parámetros
         Recibe 'request' con los datos del formulario
-        Retorna login si registro exitoso, sino regresa a registro
+        Retorna cartelera si registro exitoso e inicia sesión automáticamente
     '''
     mirequest = {}
     getRequest(mirequest)
@@ -501,8 +583,23 @@ def registrarUsuario(param, request):
         }
         
         if crearUsuario(datos_usuario):
-            param['succes_msg_login'] = "Se ha creado el usuario con éxito"
-            return login_pagina(param)
+            # ✨ NUEVO: Iniciar sesión automáticamente después del registro
+            # Obtener datos del usuario recién creado
+            usuario = {}
+            email = mirequest.get('email')
+            password = mirequest.get('cont')
+            
+            if obtenerUsuarioXEmailPass(usuario, email, password):
+                # Crear sesión con los datos del usuario
+                cargarSesion(usuario)
+                
+                # Redirigir a cartelera
+                return redirect('/cartelera')
+            else:
+                # Si por alguna razón no se pudo obtener el usuario
+                # (no debería pasar, pero por seguridad)
+                param['succes_msg_login'] = "Se ha creado el usuario con éxito. Por favor inicie sesión."
+                return login_pagina(param)
         else:
             param['error_msg_register'] = "Error: No se ha podido crear el usuario (email ya existe)"
             return registro_pagina(param)
@@ -529,10 +626,7 @@ def usuario_pagina(param):
 
 def actualizar_usuario(param, request):
     '''### Información:
-        Actualiza los datos del usuario
-        Recibe 'param' diccionario de parámetros
-        Recibe 'request' con los datos actualizados
-        Retorna la página de usuario con mensaje de éxito o error
+        Actualiza los datos del usuario incluyendo avatar
     '''
     if not haySesion():
         return redirect('/login')
@@ -540,6 +634,7 @@ def actualizar_usuario(param, request):
     mirequest = {}
     getRequest(mirequest)
     
+    # Datos básicos
     datos_actualizados = {
         'nombres': mirequest.get('nombres'),
         'apellidos': mirequest.get('apellidos'),
@@ -547,17 +642,50 @@ def actualizar_usuario(param, request):
         'password': mirequest.get('cont', '')
     }
     
+    # ✨ NUEVO: Manejo de avatar
+    avatar_filename = None
+    if 'avatar' in request.files:
+        file = request.files['avatar']
+        
+        if file and file.filename != '':
+            # Validar extensión
+            allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+            filename = secure_filename(file.filename)
+            file_ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+            
+            if file_ext in allowed_extensions:
+                # Crear nombre único: username_timestamp.ext
+                import time
+                username = session.get('username')
+                avatar_filename = f"{username}_{int(time.time())}.{file_ext}"
+                
+                # Crear directorio si no existe
+                avatar_dir = os.path.join('static', 'img', 'avatars')
+                os.makedirs(avatar_dir, exist_ok=True)
+                
+                # Guardar archivo
+                avatar_path = os.path.join(avatar_dir, avatar_filename)
+                file.save(avatar_path)
+                
+                # Agregar avatar a datos
+                datos_actualizados['avatar'] = avatar_filename
+    
+    # Actualizar en BD
     if actualizarUsuario(datos_actualizados, session.get('username')):
         # Actualizar sesión
         session['nombres'] = datos_actualizados['nombres']
         session['apellidos'] = datos_actualizados['apellidos']
         session['telefono'] = datos_actualizados['telefono']
         
-        param['succes_msg'] = "Usuario actualizado con éxito"
+        # ✅ Actualizar avatar en sesión
+        if avatar_filename:
+            session['avatar'] = avatar_filename
+        
+        flash('Usuario actualizado con éxito', 'success')
     else:
-        param['error_msg'] = "Error al actualizar usuario"
+        flash('Error al actualizar usuario', 'error')
     
-    return usuario_pagina(param)
+    return redirect('/usuario')
 
 
 def historial_pagina(param):

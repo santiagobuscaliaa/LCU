@@ -18,13 +18,13 @@
         <label for="dia">Día:</label>
         <select id="dia" name="dia" required>
             <option value="" selected disabled>Seleccione</option>
-            <option value="Lunes">Lunes</option>
-            <option value="Martes">Martes</option>
-            <option value="Miércoles">Miércoles</option>
-            <option value="Jueves">Jueves</option>
-            <option value="Viernes">Viernes</option>
-            <option value="Sábado">Sábado</option>
-            <option value="Domingo">Domingo</option>
+            {% if param.dias_disponibles %}
+                {% for dia in param.dias_disponibles %}
+                    <option value="{{ dia }}">{{ dia }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="" disabled>No hay funciones disponibles</option>
+            {% endif %}
         </select>
         <small id="error-dia" class="error"></small>
         <br>
@@ -32,29 +32,20 @@
         <label for="formato">Formato:</label>
         <select id="formato" name="formato" required>
             <option value="" selected disabled>Seleccione</option>
-            <option value="2D">2D</option>
-            <option value="3D">3D</option>
+            {% if param.formatos_disponibles %}
+                {% for formato in param.formatos_disponibles %}
+                    <option value="{{ formato }}">{{ formato }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="" disabled>No hay formatos disponibles</option>
+            {% endif %}
         </select>
         <small id="error-formato" class="error"></small>
         <br>
 
         <label for="hora">Horario:</label>
         <select id="hora" name="hora" required>
-            <option value="" selected disabled>Seleccione</option>
-            {% if param.funciones %}
-                {% for funcion in param.funciones %}
-                    <option value="{{ funcion.horario }}">{{ funcion.horario }}</option>
-                {% endfor %}
-            {% else %}
-                <option value="10:00">10:00</option>
-                <option value="12:00">12:00</option>
-                <option value="14:00">14:00</option>
-                <option value="16:00">16:00</option>
-                <option value="18:00">18:00</option>
-                <option value="20:00">20:00</option>
-                <option value="21:00">21:00</option>
-                <option value="22:00">22:00</option>
-            {% endif %}
+            <option value="" selected disabled>Seleccione día y formato primero</option>
         </select>
         <small id="error-hora" class="error"></small>
         <br>
@@ -79,6 +70,11 @@
         <input type="submit" value="Continuar" class="boton">
     </form>
 </div>
+
+<!-- Pasar las funciones a JavaScript como JSON -->
+<script>
+    var funcionesDisponibles = {{ param.funciones | tojson | safe }};
+</script>
 {% endblock %}
 
 {% block scripts %}

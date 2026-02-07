@@ -15,7 +15,8 @@ body {
 .contenedor {
   display: flex;          
   gap: 20px;              
-  align-items: center;    
+  align-items: flex-start;  /* Cambiado de center a flex-start */
+  padding: 20px;
 }
 
 
@@ -24,7 +25,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
+  flex-shrink: 0;  /* Evitar que se encoja */
+  width: 350px;    /* Ancho fijo para la columna */
 }
 
 .izquierda h1 {
@@ -33,10 +35,13 @@ body {
 }
 
 .izquierda img {
-  max-width: 100%;
-  height: auto;
+  width: 350px;              /* Ancho fijo */
+  height: 520px;             /* Alto fijo */
+  object-fit: cover;         /* Recortar si es necesario */
+  object-position: center;   /* Centrar imagen */
   border: 1px solid var(--griso); 
   margin-bottom: 15px;
+  display: block;
 }
 
 
@@ -47,7 +52,9 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   text-decoration: none;
-  font-weight: 700
+  font-weight: 700;
+  width: 100%;
+  text-align: center;
 }
 
 .boton:hover {
@@ -56,10 +63,11 @@ body {
 
 
 .derecha {
-  flex: 2;                
+  flex: 1;                   /* Ocupa el resto del espacio */
   display: flex;          
   flex-direction: column; 
-  justify-content: center;
+  justify-content: flex-start;
+  max-width: 700px;
 }
 
 .derecha p {
@@ -97,12 +105,14 @@ body {
     align-items: start;
   }
 
+  .izquierda{
+    width: 320px;
+  }
+
   .izquierda img{
-    width: 100%;
-    height: auto;
-    max-width: 320px;
-    display: block;
-    margin: 0;
+    width: 320px;
+    height: 475px;
+    object-fit: cover;
   }
 
   .derecha{ padding: 16px; }
@@ -121,9 +131,16 @@ body {
   h1{
     text-align: center;
   }
-  .izquierda{ text-align: center; }
+  
+  .izquierda{ 
+    text-align: center;
+    width: 100%;
+  }
+  
   .izquierda img{
+    width: 100%;
     max-width: 360px;
+    height: auto;
     margin: 0 auto;
   }
 
@@ -145,7 +162,11 @@ body {
     gap: 14px;
   }
 
-  .izquierda img{ max-width: 300px; }
+  .izquierda img{ 
+    max-width: 300px;
+    height: auto;
+  }
+  
   .derecha{ padding: 0; }
 
   .derecha p,

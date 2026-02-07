@@ -4,6 +4,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/front/historial.css') }}">
+
 {% endblock %}
 
 {% block content %}
@@ -21,6 +22,15 @@
 
         <!-- Contenido principal -->
         <main class="content">
+            <!-- ✨ MENSAJES FLASH ✨ -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            
             <h1 class="content-title">Historial de compras</h1>
             
             {% if param.historial %}
@@ -37,7 +47,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% set total_general = 0 %}
+                    {# ✅ CORREGIDO: Usar namespace para poder modificar la variable en el loop #}
+                    {% set ns = namespace(total=0) %}
                     {% for compra in param.historial %}
                     <tr>
                         <td>{{ compra.id }}</td>
@@ -54,13 +65,14 @@
                             {% endif %}
                         </td>
                     </tr>
-                    {% set total_general = total_general + compra.total %}
+                    {# ✅ Sumar correctamente convirtiendo a int #}
+                    {% set ns.total = ns.total + (compra.total | int) %}
                     {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr>
                         <th colspan="5">TOTAL GASTADO</th>
-                        <th colspan="2">${{ total_general }}</th>
+                        <th colspan="2">${{ ns.total }}</th>
                     </tr>
                 </tfoot>
             </table>

@@ -46,20 +46,22 @@ th:nth-child(5){
   text-align: right;
 }
 
-.btn{
-  background: var(--azul);
-  color: var(--blanco);
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  align-self: right;
-}
-
-.btn:hover{
-  filter: brightness(1.1);
-}
+.btn {
+        background-color: #0b4b8f;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+  .btn:hover {
+        background-color: #084080;
+        filter: brightness(1.1);
+    }
 
 
 .mensaje-exito{
@@ -78,6 +80,24 @@ th:nth-child(5){
 .mensaje-exito.mostrar{
   display: block;
 }
+
+.acciones-resumen {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        width: 100%;
+    }
+    
+    .link {
+        color: #0b4b8f;
+        text-decoration: none;
+        font-size: 16px;
+    }
+    
+    .link:hover {
+        text-decoration: underline;
+    }
 
 @media (max-width: 1024px){
   .contenedor{

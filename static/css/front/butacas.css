@@ -110,6 +110,12 @@ button:hover {
   text-align: center;
 }
 
+.box button.ocupada {
+    background: #e74c3c !important; /* Rojo - Ocupada */
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
 @media (max-width: 1024px){
   .contenedor{ gap: 32px; }                       
   .box{ gap: 8px; }

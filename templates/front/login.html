@@ -10,13 +10,9 @@
 <div class="box">
     <h1>Iniciar sesión</h1>
     
-    <!-- Mensajes de error/éxito -->
+    <!-- Mensajes de error del servidor -->
     {% if param and param.get('error_msg_login') %}
-        <p class="error">{{ param.get('error_msg_login') }}</p>
-    {% endif %}
-    
-    {% if param and param.get('succes_msg_login') %}
-        <p class="success">{{ param.get('succes_msg_login') }}</p>
+        <p class="error mostrar" style="text-align: center; margin-bottom: 15px;">{{ param.get('error_msg_login') }}</p>
     {% endif %}
     
     <form action="{{ url_for('signin') }}" method="POST" id="formLogin">

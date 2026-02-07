@@ -127,26 +127,47 @@ def obtenerUsuarioXEmailPass(result, email, password):
 
 def actualizarUsuario(di, email):
     '''### Información:
-        Actualiza los datos de un usuario
+        Actualiza los datos de un usuario incluyendo avatar
         Recibe 'di' diccionario con los campos a modificar
         Recibe 'email' la clave para identificar el usuario
         Retorna True si actualiza correctamente, False caso contrario
     '''
-    sQuery = """
-        UPDATE usuario 
-        SET nombres = %s, 
-            apellidos = %s,
-            telefono = %s,
-            password = %s
-        WHERE email = %s;
-    """
-    val = (
-        di.get('nombres'),
-        di.get('apellidos'),
-        di.get('telefono'),
-        di.get('password', ''),
-        email
-    )
+    # Si se proporciona avatar, actualizar también
+    if 'avatar' in di and di['avatar']:
+        sQuery = """
+            UPDATE usuario 
+            SET nombres = %s, 
+                apellidos = %s,
+                telefono = %s,
+                password = %s,
+                avatar = %s
+            WHERE email = %s;
+        """
+        val = (
+            di.get('nombres'),
+            di.get('apellidos'),
+            di.get('telefono'),
+            di.get('password', ''),
+            di.get('avatar'),
+            email
+        )
+    else:
+        # Sin avatar, actualizar solo los demás campos
+        sQuery = """
+            UPDATE usuario 
+            SET nombres = %s, 
+                apellidos = %s,
+                telefono = %s,
+                password = %s
+            WHERE email = %s;
+        """
+        val = (
+            di.get('nombres'),
+            di.get('apellidos'),
+            di.get('telefono'),
+            di.get('password', ''),
+            email
+        )
     
     resultado = updateDB(BASE, sQuery, val=val)
     return resultado == 1
@@ -233,9 +254,10 @@ def obtenerFuncionesXPelicula(id_pelicula):
         Retorna lista de funciones con sala, horario, día, formato
     '''
     sSql = """
-        SELECT f.id, f.horario, f.dia, f.formato, s.numero as sala, s.asientos
+        SELECT f.id, f.horario, f.dia, pf.formato, s.numero as sala, s.asientos
         FROM funcion f
         INNER JOIN sala s ON f.id_sala = s.id
+        INNER JOIN precio_formato pf ON f.id_formato = pf.id
         WHERE f.id_pelicula = %s
         ORDER BY f.dia, f.horario;
     """
@@ -251,11 +273,12 @@ def obtenerFuncionXId(id_funcion):
         Retorna diccionario con info de la función
     '''
     sSql = """
-        SELECT f.id, f.horario, f.dia, f.formato, f.id_pelicula,
+        SELECT f.id, f.horario, f.dia, pf.formato, f.id_pelicula,
                s.numero as sala, s.asientos, p.titulo
         FROM funcion f
         INNER JOIN sala s ON f.id_sala = s.id
         INNER JOIN pelicula p ON f.id_pelicula = p.id
+        INNER JOIN precio_formato pf ON f.id_formato = pf.id
         WHERE f.id = %s;
     """
     val = (id_funcion,)
@@ -274,10 +297,17 @@ def obtenerTodosLosProductosCandy():
         Retorna lista de diccionarios con todos los productos
     '''
     sSql = """
-        SELECT id, nombre, precio, stock, categoría, imagen
+        SELECT id, nombre, precio, stock, categoría, tipo, tamaño, imagen
         FROM candy
         WHERE stock > 0
-        ORDER BY categoría, nombre;
+        ORDER BY categoría, tipo, 
+                 CASE tamaño
+                     WHEN 'Chico' THEN 1
+                     WHEN 'Mediano' THEN 2
+                     WHEN 'Grande' THEN 3
+                     WHEN 'Único' THEN 4
+                     ELSE 5
+                 END;
     """
     
     return selectDB(BASE, sSql, dictionary=True)
@@ -290,7 +320,7 @@ def obtenerProductoCandyXId(id_candy):
         Retorna diccionario con la info del producto
     '''
     sSql = """
-        SELECT id, nombre, precio, stock, categoría, imagen
+        SELECT id, nombre, precio, stock, categoría, tipo, tamaño, imagen
         FROM candy
         WHERE id = %s;
     """
@@ -307,15 +337,77 @@ def obtenerCandyXCategoria(categoria):
         Retorna lista de productos de esa categoría
     '''
     sSql = """
-        SELECT id, nombre, precio, stock, categoría, imagen
+        SELECT id, nombre, precio, stock, categoría, tipo, tamaño, imagen
         FROM candy
         WHERE categoría = %s AND stock > 0
-        ORDER BY nombre;
+        ORDER BY tipo, 
+                 CASE tamaño
+                     WHEN 'Chico' THEN 1
+                     WHEN 'Mediano' THEN 2
+                     WHEN 'Grande' THEN 3
+                     WHEN 'Único' THEN 4
+                     ELSE 5
+                 END;
     """
     val = (categoria,)
     
     return selectDB(BASE, sSql, val, dictionary=True)
 
+def agregarCandyACompra(id_resumen, carrito_candy):
+    '''### Información:
+        Agrega múltiples productos de candy a una compra
+    '''
+    if not carrito_candy or len(carrito_candy) == 0:
+        return True
+    
+    try:
+        items_validos = [item for item in carrito_candy 
+                        if item.get('id') and item.get('precio')]
+        
+        if not items_validos:
+            return True
+        
+        for item in items_validos:
+            sSqlNext = "SELECT IFNULL(MAX(id), 0) + 1 as next_id FROM compra_candy;"
+            resultado = selectDB(BASE, sSqlNext)
+            next_id = resultado[0][0] if resultado and resultado[0] else 1
+            
+            sSql = """
+                INSERT INTO compra_candy (id, id_resumen, id_candy, cantidad, precio)
+                VALUES (%s, %s, %s, %s, %s);
+            """
+            val = (next_id, id_resumen, item.get('id'), 1, int(item.get('precio')))
+            
+            insertDB(BASE, sSql, val)
+        
+        return True
+    except:
+        return False
+
+
+def obtenerCandyDeCompra(id_resumen):
+    '''### Información:
+        Obtiene todos los productos de candy de una compra
+        Recibe 'id_resumen' del resumen_compra
+        Retorna lista de diccionarios con los candies
+    '''
+    sSql = """
+        SELECT 
+            cc.id,
+            cc.id_candy,
+            cc.cantidad,
+            cc.precio,
+            c.nombre,
+            c.tipo,
+            c.tamaño
+        FROM compra_candy cc
+        LEFT JOIN candy c ON cc.id_candy = c.id
+        WHERE cc.id_resumen = %s
+        ORDER BY cc.id;
+    """
+    val = (id_resumen,)
+    
+    return selectDB(BASE, sSql, val, dictionary=True)
 
 ##########################################################################
 # + + + TICKETS Y RESERVAS + + + + + + + + + + + + + + + + + + + + + + +
@@ -324,35 +416,41 @@ def obtenerCandyXCategoria(categoria):
 def crearTicket(cantidad, id_funcion, id_formato=1):
     '''### Información:
         Crea un nuevo ticket
-        Recibe 'cantidad' de entradas
-        Recibe 'id_funcion'
-        Recibe 'id_formato' (1=2D, 2=3D)
-        Retorna el ID del ticket creado, o None si falla
     '''
+    cantidad_str = str(cantidad)
+    
+    if cantidad not in range(1, 11):
+        return None
+    
+    sSql = "SELECT IFNULL(MAX(id), 0) + 1 as next_id FROM ticket;"
+    resultado = selectDB(BASE, sSql)
+    
+    if not resultado or not resultado[0]:
+        return None
+    
+    next_id = resultado[0][0]
+    
     sQuery = """
-        INSERT INTO ticket (id, cantidad, id_funcion, id_precio_formato)
+        INSERT INTO ticket (id, cantidad, id_funcion, id_formato)
         VALUES (%s, %s, %s, %s);
     """
-    val = (None, cantidad, id_funcion, id_formato)
+    val = (next_id, cantidad_str, id_funcion, id_formato)
     
-    resultado = insertDB(BASE, sQuery, val)
+    resultado_insert = insertDB(BASE, sQuery, val)
     
-    if resultado == 1:
-        # Obtener el último ID insertado
-        sSql = "SELECT LAST_INSERT_ID();"
-        last_id = selectDB(BASE, sSql)
-        return last_id[0][0] if last_id else None
-    
-    return None
+    return next_id if resultado_insert == 1 else None
 
 
 def agregarButacas(id_ticket, lista_butacas):
     '''### Información:
         Agrega butacas a un ticket
-        Recibe 'id_ticket'
-        Recibe 'lista_butacas' (ej: ['A1', 'A2', 'B5'])
-        Retorna True si se agregan todas correctamente
     '''
+    if not lista_butacas or len(lista_butacas) == 0:
+        return True
+    
+    if not id_ticket:
+        return False
+    
     sQuery = """
         INSERT INTO butaca (id, id_ticket, butaca)
         VALUES (%s, %s, %s);
@@ -360,9 +458,22 @@ def agregarButacas(id_ticket, lista_butacas):
     
     exito = True
     for butaca in lista_butacas:
-        val = (None, id_ticket, butaca)
-        resultado = insertDB(BASE, sQuery, val)
-        if resultado != 1:
+        try:
+            sSql = "SELECT IFNULL(MAX(id), 0) + 1 as next_id FROM butaca;"
+            resultado = selectDB(BASE, sSql)
+            
+            if not resultado or not resultado[0]:
+                exito = False
+                continue
+            
+            next_id = resultado[0][0]
+            val = (next_id, id_ticket, butaca)
+            resultado_insert = insertDB(BASE, sQuery, val)
+            
+            if resultado_insert != 1:
+                exito = False
+                
+        except:
             exito = False
     
     return exito
@@ -371,8 +482,6 @@ def agregarButacas(id_ticket, lista_butacas):
 def obtenerButacasOcupadas(id_funcion):
     '''### Información:
         Obtiene todas las butacas ya ocupadas para una función
-        Recibe 'id_funcion'
-        Retorna lista de butacas ocupadas
     '''
     sSql = """
         SELECT DISTINCT b.butaca
@@ -383,6 +492,7 @@ def obtenerButacasOcupadas(id_funcion):
     val = (id_funcion,)
     
     resultado = selectDB(BASE, sSql, val)
+    
     return [fila[0] for fila in resultado] if resultado else []
 
 
@@ -393,52 +503,56 @@ def obtenerButacasOcupadas(id_funcion):
 def crearResumenCompra(id_usuario, id_ticket, id_candy, cantidad_candy, total, pagado):
     '''### Información:
         Crea un resumen de compra
-        Recibe todos los datos de la compra
-        Retorna el ID del resumen creado
     '''
+    sSql = "SELECT IFNULL(MAX(id), 0) + 1 as next_id FROM resumen_compra;"
+    resultado = selectDB(BASE, sSql)
+    
+    if not resultado or not resultado[0]:
+        return None
+    
+    next_id = resultado[0][0]
+    
     sQuery = """
-        INSERT INTO resumen_compra (id, id_usuario, id_ticket, id_candy, cantidad, total, pagado)
+        INSERT INTO resumen_compra (id, id_ticket, id_usuario, id_candy, cantidad, total, estado)
         VALUES (%s, %s, %s, %s, %s, %s, %s);
     """
-    val = (None, id_usuario, id_ticket, id_candy, cantidad_candy, total, pagado)
+    val = (next_id, id_ticket, id_usuario, id_candy, cantidad_candy, total, pagado)
     
-    resultado = insertDB(BASE, sQuery, val)
+    resultado_insert = insertDB(BASE, sQuery, val)
     
-    if resultado == 1:
-        sSql = "SELECT LAST_INSERT_ID();"
-        last_id = selectDB(BASE, sSql)
-        return last_id[0][0] if last_id else None
-    
-    return None
-
+    return next_id if resultado_insert == 1 else None
 
 def agregarAlHistorial(id_usuario, id_resumen):
     '''### Información:
         Agrega una compra al historial del usuario
-        Recibe 'id_usuario' y 'id_resumen'
-        Retorna True si se agrega correctamente
     '''
+    sSql = "SELECT IFNULL(MAX(id), 0) + 1 as next_id FROM historial_compra;"
+    resultado = selectDB(BASE, sSql)
+    
+    if not resultado or not resultado[0]:
+        return False
+    
+    next_id = resultado[0][0]
+    
     sQuery = """
         INSERT INTO historial_compra (id, id_usuario, id_resumen)
         VALUES (%s, %s, %s);
     """
-    val = (None, id_usuario, id_resumen)
+    val = (next_id, id_usuario, id_resumen)
     
-    resultado = insertDB(BASE, sQuery, val)
-    return resultado == 1
+    resultado_insert = insertDB(BASE, sQuery, val)
+    return resultado_insert == 1
 
 
 def obtenerHistorialUsuario(id_usuario):
     '''### Información:
         Obtiene el historial de compras de un usuario
-        Recibe 'id_usuario'
-        Retorna lista con todas sus compras
     '''
     sSql = """
         SELECT 
             r.id,
             r.total,
-            r.pagado,
+            r.estado as pagado,
             r.cantidad as cantidad_candy,
             p.titulo,
             f.dia,

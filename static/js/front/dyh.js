@@ -9,18 +9,7 @@ function setError(id, msg) {
     error.textContent = "";
     error.classList.remove("mostrar");
   }
-} /*🔹 ¿Qué hace?
-Muestra o borra el mensaje de error debajo de cada campo.
-🔹 ¿Cómo lo hace?
-Busca el <small> que tiene el mensaje de error
-Ej: si id es "dia" → busca "error-dia"
-Si hay mensaje (msg):
-Escribe el texto dentro del <small>
-Le agrega la clase "mostrar" 
-Si no hay mensaje:
-Borra el texto
-Quita la clase "mostrar" (lo oculta)
-*/
+}
 
 function limpiarErrores() {
   var errores = document.querySelectorAll(".error");
@@ -28,22 +17,67 @@ function limpiarErrores() {
     errores[i].textContent = "";
     errores[i].classList.remove("mostrar");
   }
-}/*🔹 ¿Qué hace?
-Borra todos los mensajes de error del formulario antes de volver a validar.
-🔹 ¿Cómo lo hace?
-Busca todos los elementos con clase .error (tus <small>)
-Recorre uno por uno con un for
-A cada uno:
-Le borra el texto
-Le quita la clase "mostrar" */
+}
+
+function actualizarHorarios() {
+  var diaSelect = document.getElementById("dia");
+  var formatoSelect = document.getElementById("formato");
+  var horaSelect = document.getElementById("hora");
+  
+  var diaSeleccionado = diaSelect.value;
+  var formatoSeleccionado = formatoSelect.value;
+  
+  // Limpiar opciones anteriores
+  horaSelect.innerHTML = '<option value="" selected disabled>Seleccione</option>';
+  
+  // Si no hay día O formato seleccionado, no mostrar horarios
+  if (!diaSeleccionado || !formatoSeleccionado) {
+    horaSelect.innerHTML = '<option value="" disabled>Seleccione día y formato primero</option>';
+    return;
+  }
+  
+  // Filtrar funciones que coincidan con día Y formato
+  var funcionesFiltradas = funcionesDisponibles.filter(function(f) {
+    return f.dia === diaSeleccionado && f.formato === formatoSeleccionado;
+  });
+  
+  // Si no hay funciones para esa combinación
+  if (funcionesFiltradas.length === 0) {
+    horaSelect.innerHTML = '<option value="" disabled>No hay horarios disponibles para esta combinación</option>';
+    return;
+  }
+  
+  // Extraer horarios únicos (por si hay duplicados)
+  var horariosUnicos = [];
+  var horariosSet = {};
+  
+  for (var i = 0; i < funcionesFiltradas.length; i++) {
+    var horario = funcionesFiltradas[i].horario;
+    if (!horariosSet[horario]) {
+      horariosSet[horario] = true;
+      horariosUnicos.push(horario);
+    }
+  }
+  
+  // Ordenar horarios
+  horariosUnicos.sort();
+  
+  // Agregar opciones al select
+  for (var i = 0; i < horariosUnicos.length; i++) {
+    var option = document.createElement("option");
+    option.value = horariosUnicos[i];
+    option.textContent = horariosUnicos[i];
+    horaSelect.appendChild(option);
+  }
+}
 
 function validarDyH(e) {
-  limpiarErrores(); // Borra errores anteriores
+  limpiarErrores();
   var hasErrors = false;
 
-  var dia      = document.getElementById("dia");
-  var formato  = document.getElementById("formato");
-  var hora     = document.getElementById("hora");
+  var dia = document.getElementById("dia");
+  var formato = document.getElementById("formato");
+  var hora = document.getElementById("hora");
   var entradas = document.getElementById("entradas");
 
   if (!dia.value) {
@@ -67,16 +101,28 @@ function validarDyH(e) {
   }
 
   if (hasErrors) {
-    e.preventDefault(); // Evita que el formulario se envíe
+    e.preventDefault();
   }
-}/*.value es lo que el usuario eligió
-Si está vacío → muestra error con setError
-Marca hasErrors = true
-Si hubo errores → frena el envío
-*/
-
-function cargarEventos() {
-  document.getElementById("formDyh").addEventListener("submit", validarDyH);
 }
 
-cargarEventos()
+function cargarEventos() {
+  var formDyh = document.getElementById("formDyh");
+  var diaSelect = document.getElementById("dia");
+  var formatoSelect = document.getElementById("formato");
+  
+  if (formDyh) {
+    formDyh.addEventListener("submit", validarDyH);
+  }
+  
+  // Cuando cambia el día → actualizar horarios
+  if (diaSelect) {
+    diaSelect.addEventListener("change", actualizarHorarios);
+  }
+  
+  // Cuando cambia el formato → actualizar horarios
+  if (formatoSelect) {
+    formatoSelect.addEventListener("change", actualizarHorarios);
+  }
+}
+
+cargarEventos();

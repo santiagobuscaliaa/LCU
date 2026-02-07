@@ -201,6 +201,10 @@ def route(app):
         param = {}
         return agregar_candy(param, request)
     
+    @app.route('/limpiar_carrito', methods=['POST'])
+    def limpiar_carrito_route():
+        param = {}
+        return limpiar_carrito()
     
     @app.route("/resumen")
     def resumen():

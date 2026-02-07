@@ -22,16 +22,17 @@
     <main class="content">
         <h1 class="content-title">Editar usuario</h1>
         
-        <!-- Mensajes de error/éxito -->
-        {% if param and param.get('error_msg') %}
-            <p class="error">{{ param.get('error_msg') }}</p>
-        {% endif %}
-        
-        {% if param and param.get('succes_msg') %}
-            <p class="success">{{ param.get('succes_msg') }}</p>
-        {% endif %}
+        <!-- ✨ MENSAJES FLASH ✨ -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
-        <form class="form" action="{{ url_for('actualizar_usuario_route') }}" method="POST">
+        <!-- ✅ FORM con enctype para archivos -->
+        <form class="form" action="{{ url_for('actualizar_usuario_route') }}" method="POST" enctype="multipart/form-data">
             <h2>Datos personales</h2>
             
             <div class="field">
@@ -71,6 +72,9 @@
                        value="{{ param.usuario.telefono if param.usuario else '' }}" required>
             </div>
 
+            <!-- ✅ Avatar DENTRO del form (oculto) -->
+            <input type="file" id="avatar" name="avatar" accept="image/*" hidden>
+
             <div class="boton-container"> 
                 <input type="submit" class="boton" value="Actualizar">
             </div>
@@ -81,10 +85,35 @@
     <aside class="sidebar avatar-box">
         <h3 class="sidebar-title">Avatar</h3>
         <div class="avatar-preview">
-            <img src="{{ url_for('static', filename='img/-usuario.jpg') }}" alt="Avatar actual">
+            {% if param.usuario and param.usuario.avatar and param.usuario.avatar != '' %}
+                <!-- ✅ Avatar personalizado -->
+                <img id="avatar-img" src="{{ url_for('static', filename='img/avatars/' ~ param.usuario.avatar) }}" alt="Avatar actual">
+            {% else %}
+                <!-- Avatar por defecto -->
+                <img id="avatar-img" src="{{ url_for('static', filename='img/-usuario.jpg') }}" alt="Avatar actual">
+            {% endif %}
         </div>
-        <input type="file" id="avatar" hidden>
+        <!-- ✅ Label que activa el input de archivo -->
         <label for="avatar" class="boton">Seleccionar imagen</label>
+        <p id="filename" style="font-size: 12px; color: #666; margin-top: 10px;"></p>
     </aside>
 </div>
+
+<!-- ✨ SCRIPT para preview del avatar -->
+<script>
+document.getElementById('avatar').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Mostrar nombre del archivo
+        document.getElementById('filename').textContent = file.name;
+        
+        // Preview de la imagen
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatar-img').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 {% endblock %}

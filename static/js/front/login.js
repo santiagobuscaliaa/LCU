@@ -40,13 +40,16 @@ function validarLogin(e) {
     }
   }
 
-  // Validar contraseña
+  // Validar contraseña con requisitos completos
   if (!pass) {
     setError("error-cont", "Debe ingresar una contraseña.");
     hasErrors = true;
-  } else if (pass.length < 3) {
-    setError("error-cont", "La contraseña es demasiado corta.");
-    hasErrors = true;
+  } else {
+    var passRegla = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passRegla.test(pass)) {
+      setError("error-cont", "Mín. 8 caracteres: una mayúscula, una minúscula y un número.");
+      hasErrors = true;
+    }
   }
 
   // Si hay errores, NO enviar el formulario

@@ -118,7 +118,27 @@ body{
   text-align: right;
 }
 
-
+.flash {
+        padding: 15px 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+        animation: slideDown 0.5s ease;
+    }
+    
+    .flash.success {
+        background-color: #4caf50;
+        color: white;
+        border-left: 5px solid #2e7d32;
+    }
+    
+    .flash.error {
+        background-color: #f44336;
+        color: white;
+        border-left: 5px solid #c62828;
+    }
+    
 @media (max-width: 1024px){
   body{ padding-top: 80px; }
 

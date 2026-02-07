@@ -4,6 +4,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/front/resumen.css') }}">
+
 {% endblock %}
 
 {% block content %}
@@ -49,9 +50,14 @@
                 </td>
                 <td>{{ param.cantidad_entradas or 0 }}</td>
                 <td>
-                    {% if param.candy %}
+                    {% if param.candy and param.candy|length > 0 %}
                         {% for item in param.candy %}
-                            {{ item.tipo }} {{ item.tamano }}<br>
+                            {# Solo mostrar si tiene nombre válido #}
+                            {% if item.nombre and item.nombre != 'None' %}
+                                {{ item.nombre }} (${{ item.precio }})<br>
+                            {% elif item.tipo and item.tipo != 'None' %}
+                                {{ item.tipo }} - {{ item.tamaño }} (${{ item.precio }})<br>
+                            {% endif %}
                         {% endfor %}
                     {% else %}
                         Sin candy
@@ -68,12 +74,13 @@
         </tfoot>
     </table>
     
-    <form action="{{ url_for('comprar') }}" method="POST">
-        <button type="submit" class="btn" id="comprarBtn">Comprar</button>
-    </form>
-    
-    <div style="margin-top: 20px;">
+    <!-- Botones alineados: izquierda y derecha -->
+    <div class="acciones-resumen">
         <a href="{{ url_for('candy') }}" class="link">← Volver a Candy</a>
+        
+        <form action="{{ url_for('comprar') }}" method="POST" style="margin: 0;">
+            <button type="submit" class="btn" id="comprarBtn">Comprar</button>
+        </form>
     </div>
 </main>
 
