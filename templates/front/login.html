@@ -1,0 +1,37 @@
+{% extends "a.html" %}
+
+{% block title %}Iniciar sesión - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h1>Iniciar sesión</h1>
+    
+    <!-- Mensajes de error del servidor -->
+    {% if param and param.get('error_msg_login') %}
+        <p class="error mostrar" style="text-align: center; margin-bottom: 15px;">{{ param.get('error_msg_login') }}</p>
+    {% endif %}
+    
+    <form action="{{ url_for('signin') }}" method="POST" id="formLogin">
+        <label for="email" class="prim">Correo electrónico</label><br>
+        <input type="email" id="email" name="email"><br>
+        <small id="error-email" class="error"></small><br>
+
+        <label for="cont">Contraseña</label><br>
+        <input type="password" id="cont" name="cont"><br>
+        <small id="error-cont" class="error"></small><br>
+
+        <input type="submit" value="Iniciar sesión" class="boton">
+        <a href="{{ url_for('register') }}" class="link">¿No tienes una cuenta? Regístrate</a><br>
+    </form>
+</div>
+
+<div id="mensaje-exito" class="mensaje-exito"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/front/login.js') }}" defer></script>
+{% endblock %}

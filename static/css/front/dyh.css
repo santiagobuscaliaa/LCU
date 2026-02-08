@@ -1,0 +1,82 @@
+:root{
+  --fondo: #000;
+  --box: #0f0f10;          
+  --blanco: #eaeaea;
+  --gris: #9aa0a6;
+  --griso: rgba(255,255,255,0.08);
+  --azul: #0b4b8f;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--blanco);
+}
+
+.box {
+  margin: auto;
+  width: min(600px, 92vw);
+  background: var(--box);
+  border: 3px solid var(--griso);       
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+label{font-weight:600}
+
+input,button,select{
+  background: var(--blanco);
+  width: 100%;
+  padding:10px 12px;
+  border:1.8px solid var(--gris);
+  border-radius:8px;
+  font-size:16px;
+  margin: 10px; 
+}
+
+.boton{
+  background:var(--azul); 
+  color:var(--blanco); 
+  font-weight:700;
+  border:none;
+  cursor: pointer;
+}
+.boton:hover{filter:brightness(1.1)}
+
+.link{
+  display: inline-block;
+  margin-top: 15px;
+}
+
+.prim{
+  display: inline-block;
+  margin-top: 15px;
+}
+
+.error {
+  display: none;       
+  color: red;
+  font-size: small;
+  margin-top: 1px;
+}
+
+.error.mostrar {
+  display: block;       
+}
+
+@media (max-width: 1024px){
+  body{ padding-top: 96px; }   
+}
+
+@media (max-width: 768px){
+  body{ padding-top: 170px; }
+  .box{ padding: 22px; }
+  input, select, button{ font-size: 16px; padding: 10px 12px; }
+}
+
+@media (max-width: 480px){
+  body{ padding-top: 190px; }
+  .box{ padding: 18px;}
+}

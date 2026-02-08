@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador de Películas</title>
+    <link rel="stylesheet" href="a.css">
+    <link rel="stylesheet" href="peliadmin.css">
+</head>
+<body>
+    <header class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+        <a href="carteleradmin.html">
+            <img src="UUU.png">
+        </a>
+        <span class="admin-span">ADMIN</span>
+        </div>
+
+        <!-- Menú principal -->
+        <div class="main-menu">
+        <ul>
+            <li><a href="carteleradmin.html">Películas</a></li>
+            <li><a href="butadmin.html">Butacas</a></li>
+            <li><a href="reservas.html">Reservas</a></li>
+            <li><a href="candyadmin.html">Candy</a></li>
+        </ul>
+        </div>
+
+        <!-- Opciones a la derecha -->
+        <div class="right-menu">
+         <a href="#">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <div class="box">
+        <h1>Administrador de Películas</h1>
+        
+        <h2>Agregar Nueva Película</h2>
+        <form id="addMovieForm">
+            <div>
+                <label for="title">Título:</label>
+                <input type="text" id="title" name="title">
+                <small id="error-title" class="error"></small>
+            </div>
+            <div>
+                <label for="Sinopsis">Sinópsis:</label>
+                <input type="text" id="Sinopsis" name="Sinopsis">
+                <small id="error-Sinopsis" class="error"></small>
+            </div>
+            <div>
+                <label for="duracion">Duración (Xh Xmin):</label>
+                <input type="text" id="duracion" name="duracion">
+                <small id="error-duracion" class="error"></small>
+            </div>
+            <div>
+                <label for="genre">Géneros:</label>
+                <select id="genre" name="genre">
+                    <option value="">Seleccione un género</option>
+                    <option value="Acción">Acción</option>
+                    <option value="Comedia">Comedia</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Ciencia Ficción">Ciencia Ficción</option>
+                    <option value="Terror">Terror</option>
+                    <option value="Animación">Animación</option>
+                    <option value="Documental">Documental</option>
+                </select>
+                <small id="error-genre" class="error"></small>
+            </div>
+            <div>
+                <label for="clasificacion">Clasificación de edad:</label>
+                <select id="clasificacion" name="clasificacion">
+                    <option value="">Seleccione una clasificación</option>
+                    <option value="ATP">ATP</option>
+                    <option value="+13">+13</option>
+                    <option value="+16">+16</option>
+                    <option value="+18">+18</option>
+                </select>
+                <small id="error-clasificacion" class="error"></small>
+            </div>
+            <div>
+                <label for="image">Póster de la película:</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                <small id="error-image" class="error"></small>
+            </div>
+            <div>
+                <label for="IMDb">Link IMDb:</label>
+                <input type="url" id="IMDb" name="IMDb">
+                <small id="error-IMDb" class="error"></small>
+            </div>
+            <div>
+                <label for="rotten">Link Rotten Tomatoes:</label>
+                <input type="url" id="rotten" name="rotten">
+                <small id="error-rotten" class="error"></small>
+            </div>
+            <div>
+                <label for="trailer">Link Trailer:</label>
+                <input type="url" id="trailer" name="trailer">
+                <small id="error-trailer" class="error"></small>
+            </div>
+            <div>
+                <button type="submit">Agregar Película</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 LCU. Contactanos en:</p>
+            <div class="footer-links">
+                <a href="#" ><img src="-inst.png" ></a>
+                <a href="#" ><img src="-x.png" class="x" ></a>
+                <a href="#" ><img src="-mail.png" class="mail" ></a>
+            </div>
+        </div>
+    </footer>
+    <script src="peliadmin.js"></script>
+</body>
+</html>
+    
+

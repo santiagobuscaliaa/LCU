@@ -1,0 +1,147 @@
+:root{
+  --fondo: #000;
+  --box: #0f0f10;          
+  --blanco: #eaeaea;
+  --gris: #9aa0a6;
+  --griso: rgba(255,255,255,0.08);
+  --azul: #0b4b8f;
+}
+
+body{
+  background: var(--fondo);
+  color: var(--blanco);
+}
+
+.contenedor{
+  width: 900px;
+  margin: auto auto;
+  padding: 20px;
+  background: var(--box);
+  border: 1px solid var(--griso);
+  border-radius: 10px;
+}
+
+h1{
+  margin-bottom: 16px;
+}
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th, td{
+  padding: 10px;
+  border: 1px solid var(--griso);
+}
+
+thead th{
+  background: var(--griso);
+  font-weight: bold;
+}
+
+td:nth-child(5),
+th:nth-child(5){
+  text-align: right;
+}
+
+.btn {
+        background-color: #0b4b8f;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+  .btn:hover {
+        background-color: #084080;
+        filter: brightness(1.1);
+    }
+
+
+.mensaje-exito{
+  display: none;
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: green;  
+  color: var(--blanco);
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 1000;
+}
+.mensaje-exito.mostrar{
+  display: block;
+}
+
+.acciones-resumen {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        width: 100%;
+    }
+    
+    .link {
+        color: #0b4b8f;
+        text-decoration: none;
+        font-size: 16px;
+    }
+    
+    .link:hover {
+        text-decoration: underline;
+    }
+
+@media (max-width: 1024px){
+  .contenedor{
+    width: 92%;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px){
+  body{ padding-top: 120px; }
+
+  .contenedor{
+    width: 92%;
+    padding: 16px;
+  }
+
+  table th, table td{
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .btn{
+    width: 100%;
+    display: block;
+    margin-left: auto;   
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px){
+  body{ padding-top: 150px; }
+
+  .contenedor{
+    width: 94%;
+    padding: 14px;
+  }
+
+  table{
+    display: block;
+    overflow-x: auto;
+  }
+
+  table th, table td{
+    padding: 8px;
+    font-size: 13px;
+  }
+}

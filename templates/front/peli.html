@@ -1,0 +1,60 @@
+{% extends "a.html" %}
+
+{% block title %}{{ param.pelicula.titulo }} - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/peli.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="contenedor">
+    {% if param.pelicula %}
+    <!-- Bloque izquierdo -->
+    <div class="izquierda">
+        <h1>{{ param.pelicula.titulo }}</h1>
+        <img src="{{ url_for('static', filename='img/' ~ param.pelicula.poster) }}" 
+             alt="Poster de {{ param.pelicula.titulo }}">
+        
+        {% if param.sesion_activa %}
+            <a class="boton" href="{{ url_for('dyh', id_pelicula=param.pelicula.id) }}">Continuar</a>
+        {% else %}
+            <a class="boton" href="{{ url_for('login') }}">Iniciar sesión para reservar</a>
+        {% endif %}
+    </div>
+
+    <!-- Bloque derecho -->
+    <div class="derecha">
+        <h2>Sinopsis</h2>
+        <p>{{ param.pelicula.sinopsis }}</p>
+        
+        <h3>Duración</h3>
+        <p>{{ param.pelicula.duracion }}</p>
+        
+        <h3>Año</h3>
+        <p>{{ param.pelicula.año }}</p>
+        
+        <h3>Géneros</h3>
+        <p>{{ param.pelicula.genero }}</p>
+        
+        <h3>Clasificación</h3>
+        <p>{{ param.pelicula.clas_edad }}</p>
+        
+        <h3>Formatos</h3>
+        <p>2D / 3D</p>
+
+        <h3>Páginas de reseña</h3>
+        <ul>
+            <li><a href="{{ param.pelicula.imdb }}" target="_blank">IMDb</a></li>
+            <li><a href="{{ param.pelicula.rotten }}" target="_blank">Rotten Tomatoes</a></li>
+        </ul>
+
+        <h3>Trailer</h3>
+        <p>
+            🎬 <a href="{{ param.pelicula.trailer }}" target="_blank">Ver Trailer</a>
+        </p>
+    </div>
+    {% else %}
+        <p>Película no encontrada.</p>
+    {% endif %}
+</div>
+{% endblock %}

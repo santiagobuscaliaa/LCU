@@ -1,0 +1,213 @@
+{% extends "a.html" %}
+
+{% block title %}Candy - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/candy.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<h1>Candy 🍿🥤</h1>
+
+<div class="contenedor">
+    {% if param.productos %}
+        {% set categorias = {} %}
+        
+        {# Agrupar productos por categoría #}
+        {% for producto in param.productos %}
+            {% if producto.categoría not in categorias %}
+                {% set _ = categorias.update({producto.categoría: {}}) %}
+            {% endif %}
+            
+            {# Agrupar por tipo dentro de cada categoría #}
+            {% if producto.tipo not in categorias[producto.categoría] %}
+                {% set _ = categorias[producto.categoría].update({producto.tipo: []}) %}
+            {% endif %}
+            
+            {% set _ = categorias[producto.categoría][producto.tipo].append(producto) %}
+        {% endfor %}
+        
+        <!-- ========================================
+             POCHOCLOS
+        ======================================== -->
+        {% if categorias.get('Pochoclos') %}
+        <div class="bloque">
+            <h3>Pochoclos</h3>
+            <img src="{{ url_for('static', filename='img/-pocho.jpg') }}" alt="Pochoclos">
+            
+            <details>
+                <summary>Mostrar Opciones</summary>
+                
+                <fieldset>
+                    <legend>Tipo</legend>
+                    {% for tipo in categorias['Pochoclos'].keys() %}
+                        <label>
+                            <input type="radio" name="tipo_pochoclos" value="{{ tipo }}"> {{ tipo }}
+                        </label><br>
+                    {% endfor %}
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for tipo, productos in categorias['Pochoclos'].items() %}
+                        {% for producto in productos %}
+                            <label class="tamano-option" data-tipo="{{ producto.tipo }}">
+                                <input type="radio" 
+                                       name="tamaño_pochoclos" 
+                                       value="{{ producto.id }}" 
+                                       data-tipo="{{ producto.tipo }}"
+                                       data-precio="{{ producto.precio }}">
+                                {{ producto.tipo }} - {{ producto.tamaño }} (${{ producto.precio }})
+                            </label><br>
+                        {% endfor %}
+                    {% endfor %}
+                </fieldset>
+
+                <button type="button" class="agregar-carrito" data-categoria="Pochoclos">Agregar al carrito</button>
+                <small id="error-pochoclos" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+
+        <!-- ========================================
+             BEBIDAS
+        ======================================== -->
+        {% if categorias.get('Bebidas') %}
+        <div class="bloque">
+            <h3>Bebidas</h3>
+            <img src="{{ url_for('static', filename='img/-bebi.jpg') }}" alt="Bebidas">
+
+            <details>
+                <summary>Mostrar Opciones</summary>
+                
+                <fieldset>
+                    <legend>Tipo</legend>
+                    {% for tipo in categorias['Bebidas'].keys() %}
+                        <label>
+                            <input type="radio" name="tipo_bebidas" value="{{ tipo }}"> {{ tipo }}
+                        </label><br>
+                    {% endfor %}
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for tipo, productos in categorias['Bebidas'].items() %}
+                        {% for producto in productos %}
+                            <label class="tamano-option" data-tipo="{{ producto.tipo }}">
+                                <input type="radio" 
+                                       name="tamaño_bebidas" 
+                                       value="{{ producto.id }}" 
+                                       data-tipo="{{ producto.tipo }}"
+                                       data-precio="{{ producto.precio }}">
+                                {{ producto.tipo }} - {{ producto.tamaño }} (${{ producto.precio }})
+                            </label><br>
+                        {% endfor %}
+                    {% endfor %}
+                </fieldset>
+
+                <button type="button" class="agregar-carrito" data-categoria="Bebidas">Agregar al carrito</button>
+                <small id="error-bebidas" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+
+        <!-- ========================================
+             SNACKS
+        ======================================== -->
+        {% if categorias.get('Snacks') %}
+        <div class="bloque">
+            <h3>Snacks</h3>
+            <img src="{{ url_for('static', filename='img/-snacks.webp') }}" alt="Snacks">
+
+            <details>
+                <summary>Mostrar Opciones</summary>
+                
+                <fieldset>
+                    <legend>Tipo</legend>
+                    {% for tipo in categorias['Snacks'].keys() %}
+                        <label>
+                            <input type="radio" name="tipo_snacks" value="{{ tipo }}"> {{ tipo }}
+                        </label><br>
+                    {% endfor %}
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for tipo, productos in categorias['Snacks'].items() %}
+                        {% for producto in productos %}
+                            <label class="tamano-option" data-tipo="{{ producto.tipo }}">
+                                <input type="radio" 
+                                       name="tamaño_snacks" 
+                                       value="{{ producto.id }}" 
+                                       data-tipo="{{ producto.tipo }}"
+                                       data-precio="{{ producto.precio }}">
+                                {{ producto.tipo }} - {{ producto.tamaño }} (${{ producto.precio }})
+                            </label><br>
+                        {% endfor %}
+                    {% endfor %}
+                </fieldset>
+
+                <button type="button" class="agregar-carrito" data-categoria="Snacks">Agregar al carrito</button>
+                <small id="error-snacks" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+
+        <!-- ========================================
+             COMBOS
+        ======================================== -->
+        {% if categorias.get('Combos') %}
+        <div class="bloque">
+            <h3>Combos</h3>
+            <img src="{{ url_for('static', filename='img/-combos.jpg') }}" alt="Combos">
+
+            <details>
+                <summary>Mostrar Opciones</summary>
+                
+                <fieldset>
+                    <legend>Opción</legend>
+                    {% for tipo in categorias['Combos'].keys() %}
+                        <label>
+                            <input type="radio" name="tipo_combos" value="{{ tipo }}"> {{ tipo }}
+                        </label><br>
+                    {% endfor %}
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamaño</legend>
+                    {% for tipo, productos in categorias['Combos'].items() %}
+                        {% for producto in productos %}
+                            <label class="tamano-option" data-tipo="{{ producto.tipo }}">
+                                <input type="radio" 
+                                       name="tamaño_combos" 
+                                       value="{{ producto.id }}" 
+                                       data-tipo="{{ producto.tipo }}"
+                                       data-precio="{{ producto.precio }}">
+                                {{ producto.tamaño }} (${{ producto.precio }})
+                            </label><br>
+                        {% endfor %}
+                    {% endfor %}
+                </fieldset>
+
+                <button type="button" class="agregar-carrito" data-categoria="Combos">Agregar al carrito</button>
+                <small id="error-combos" class="error"></small>
+            </details>
+        </div>
+        {% endif %}
+    {% else %}
+        <p>No hay productos disponibles en este momento.</p>
+    {% endif %}
+</div>
+
+<!-- Botones FUERA del contenedor grid -->
+<div class="contenedor-boton-resumen">
+    <a href="{{ url_for('resumen') }}" class="boton-resumen">Ir al Resumen</a>
+    <button type="button" class="boton-limpiar" id="btnLimpiarCarrito">Limpiar Carrito</button>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/front/candy.js') }}"></script>
+{% endblock %}

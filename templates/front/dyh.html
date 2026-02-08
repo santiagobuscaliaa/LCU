@@ -1,0 +1,82 @@
+{% extends "a.html" %}
+
+{% block title %}Seleccionar función - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/dyh.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h1>Seleccione la función</h1><br>
+    
+    {% if param.pelicula %}
+        <h3>{{ param.pelicula.titulo }}</h3><br>
+    {% endif %}
+    
+    <form action="{{ url_for('procesar_dyh_route') }}" method="POST" id="formDyh">
+        <label for="dia">Día:</label>
+        <select id="dia" name="dia" required>
+            <option value="" selected disabled>Seleccione</option>
+            {% if param.dias_disponibles %}
+                {% for dia in param.dias_disponibles %}
+                    <option value="{{ dia }}">{{ dia }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="" disabled>No hay funciones disponibles</option>
+            {% endif %}
+        </select>
+        <small id="error-dia" class="error"></small>
+        <br>
+        
+        <label for="formato">Formato:</label>
+        <select id="formato" name="formato" required>
+            <option value="" selected disabled>Seleccione</option>
+            {% if param.formatos_disponibles %}
+                {% for formato in param.formatos_disponibles %}
+                    <option value="{{ formato }}">{{ formato }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="" disabled>No hay formatos disponibles</option>
+            {% endif %}
+        </select>
+        <small id="error-formato" class="error"></small>
+        <br>
+
+        <label for="hora">Horario:</label>
+        <select id="hora" name="hora" required>
+            <option value="" selected disabled>Seleccione día y formato primero</option>
+        </select>
+        <small id="error-hora" class="error"></small>
+        <br>
+        
+        <label for="entradas">Cantidad de entradas:</label>
+        <select id="entradas" name="entradas" required>
+            <option value="" selected disabled>Seleccione</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+        <small id="error-entradas" class="error"></small>
+        <br>
+
+        <input type="submit" value="Continuar" class="boton">
+    </form>
+</div>
+
+<!-- Pasar las funciones a JavaScript como JSON -->
+<script>
+    var funcionesDisponibles = {{ param.funciones | tojson | safe }};
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/front/dyh.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "a.html" %}
+
+{% block title %}Cartelera - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/cartelera.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="buscador">
+        <form action="{{ url_for('buscar') }}" method="POST">
+            <input type="text" name="nombre" placeholder="Buscar por nombre...">
+            
+            <select name="genero">
+                <option value="">Todos los géneros</option>
+                <option value="Acción">Acción</option>
+                <option value="Comedia">Comedia</option>
+                <option value="Drama">Drama</option>
+                <option value="Terror">Terror</option>
+                <option value="Ciencia Ficción">Ciencia Ficción</option>
+                <option value="Animación">Animación</option>
+                <option value="Documental">Documental</option>
+            </select>
+
+            <select name="clasificacion">
+                <option value="">Todas las clasificaciones</option>
+                <option value="ATP">ATP</option>
+                <option value="+13">+13</option>
+                <option value="+16">+16</option>
+                <option value="+18">+18</option>
+            </select>
+
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <h1>🎬 PELÍCULAS EN CARTELERA</h1>
+
+    <div class="contenedor-peliculas">
+        {% if param.peliculas %}
+            {% for pelicula in param.peliculas %}
+            <a href="{{ url_for('pelicula', id_pelicula=pelicula.id) }}">
+                <button>
+                    <img src="{{ url_for('static', filename='img/' ~ pelicula.poster) }}" 
+                         alt="{{ pelicula.titulo }}">
+                    <p>{{ pelicula.titulo }}</p>
+                    <p class="g">{{ pelicula.genero }}</p>
+                </button>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p>No se encontraron películas.</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

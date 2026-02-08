@@ -1,0 +1,92 @@
+{% extends "a.html" %}
+
+{% block title %}Resumen de Compra - Cine LCU{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/front/resumen.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<main class="contenedor">
+    <h1>Resumen de compra</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Película</th>
+                <th>Función</th>
+                <th>Butacas</th>
+                <th>Cant. entradas</th>
+                <th>Candy</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% if param.pelicula %}
+                        {{ param.pelicula.titulo }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if param.funcion %}
+                        {{ param.funcion.dia }} - {{ param.funcion.horario }}<br>
+                        {{ param.funcion.formato }} - Sala {{ param.funcion.sala }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if param.butacas %}
+                        {% for butaca in param.butacas %}
+                            {{ butaca }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ param.cantidad_entradas or 0 }}</td>
+                <td>
+                    {% if param.candy and param.candy|length > 0 %}
+                        {% for item in param.candy %}
+                            {# Solo mostrar si tiene nombre válido #}
+                            {% if item.nombre and item.nombre != 'None' %}
+                                {{ item.nombre }} (${{ item.precio }})<br>
+                            {% elif item.tipo and item.tipo != 'None' %}
+                                {{ item.tipo }} - {{ item.tamaño }} (${{ item.precio }})<br>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin candy
+                    {% endif %}
+                </td>
+                <td>${{ param.total or 0 }}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="5">TOTAL A PAGAR</th>
+                <th>${{ param.total or 0 }}</th>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <!-- Botones alineados: izquierda y derecha -->
+    <div class="acciones-resumen">
+        <a href="{{ url_for('candy') }}" class="link">← Volver a Candy</a>
+        
+        <form action="{{ url_for('comprar') }}" method="POST" style="margin: 0;">
+            <button type="submit" class="btn" id="comprarBtn">Comprar</button>
+        </form>
+    </div>
+</main>
+
+<div id="mensaje-exito" class="mensaje-exito"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/front/resumen.js') }}" defer></script>
+{% endblock %}
