@@ -609,16 +609,30 @@ def registrarUsuario(param, request):
 
 
 def usuario_pagina(param):
-    '''### Información:
-        Carga la página de perfil de usuario
-        Recibe 'param' diccionario de parámetros
-        Retorna el template renderizado o redirige a login
-    '''
+    '''Carga la página de perfil de usuario'''
     if not haySesion():
         return redirect('/login')
     
-    # Obtener datos del usuario
-    obtenerUsuarioXEmail(param, session.get('username'), 'usuario')
+    # Obtener datos del usuario desde la BD
+    query = """
+        SELECT id, nombres, apellidos, nacimiento, email, telefono, avatar
+        FROM usuario
+        WHERE email = %s
+    """
+    resultado = selectDB(BASE, query, (session.get('username'),), dictionary=True)
+    
+    if resultado:
+        param['usuario'] = resultado[0]
+    else:
+        # Si no se encuentra, usar datos de la sesión
+        param['usuario'] = {
+            'nombres': session.get('nombres'),
+            'apellidos': session.get('apellidos'),
+            'email': session.get('username'),
+            'telefono': session.get('telefono'),
+            'avatar': session.get('avatar', '')
+        }
+    
     param['sesion_activa'] = True
     
     return render_template('front/usuario.html', param=param)

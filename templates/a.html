@@ -39,9 +39,11 @@
         <!-- Usuario logueado -->
         <span>Hola, {{ session.get('nombres') }}</span>
         <a href="{{ url_for('usuario') }}">
-          {% if session.get('avatar') and session.get('avatar') != '' %}
-            <!-- ✅ Avatar personalizado -->
-            <img src="{{ url_for('static', filename='img/avatars/' ~ session.get('avatar')) }}" class="icon" alt="Usuario">
+          {# Solo usar avatar si termina en .jpg, .png, .jpeg, etc. #}
+          {% set avatar = session.get('avatar', '') %}
+          {% if avatar and (avatar.endswith('.jpg') or avatar.endswith('.png') or avatar.endswith('.jpeg') or avatar.endswith('.webp') or avatar.endswith('.gif')) %}
+            <!-- Avatar personalizado válido -->
+            <img src="{{ url_for('static', filename='img/avatars/' ~ avatar) }}" class="icon" alt="Usuario">
           {% else %}
             <!-- Avatar por defecto -->
             <img src="{{ url_for('static', filename='img/-usuario.jpg') }}" class="icon" alt="Usuario">
@@ -56,9 +58,6 @@
       {% endif %}
     </div>
   </header>
-
-  <!-- ❌ MENSAJES FLASH ELIMINADOS DE AQUÍ -->
-  <!-- Ahora solo aparecen en las páginas que los necesitan -->
 
   <!-- CONTENIDO -->
   {% block content %}

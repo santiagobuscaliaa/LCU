@@ -118,8 +118,14 @@ def obtenerUsuarioXEmailPass(result, email, password):
         result['username'] = fila[0][4]  # email
         result['telefono'] = fila[0][5]
         result['password'] = fila[0][6]
-        result['avatar'] = fila[0][7]
-        result['imagen'] = fila[0][7]
+        
+        # ✅ CORREGIDO: Convertir None a string vacío
+        avatar_value = fila[0][7]
+        if avatar_value is None or avatar_value == 'None':
+            result['avatar'] = ''
+        else:
+            result['avatar'] = avatar_value
+        
         result['rol'] = 'cliente'
     
     return res

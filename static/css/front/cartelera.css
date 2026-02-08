@@ -87,7 +87,6 @@ button p {
   border-radius: 8px;
   border: none;
   font-size: 14px;
-  margin: 10px;
 }
 
 .buscador input {
@@ -108,6 +107,14 @@ button p {
   filter: brightness(1.1);
 }
 
+.buscador form {
+  display: flex;
+  flex-direction: row; /* Asegura que sea una fila */
+  align-items: center; /* Centra verticalmente los elementos */
+  justify-content: center; /* Centra horizontalmente el grupo */
+  gap: 12px; /* Espacio entre los elementos */
+  width: 100%;
+}
 
 @media (max-width: 1024px) {
   .contenedor-peliculas {
