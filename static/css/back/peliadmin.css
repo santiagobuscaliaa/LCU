@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root{
   --fondo: #000;
   --box: #0f0f10;          
@@ -79,4 +80,87 @@ table{
   body{
     margin: auto auto;
   }
+=======
+:root{
+  --fondo: #000;
+  --box: #0f0f10;          
+  --blanco: #eaeaea;
+  --gris: #9aa0a6;
+  --griso: rgba(255,255,255,0.08);
+  --azul: #0b4b8f;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--box);
+  max-width: 100%;
+}
+
+.box {
+  width: min(90vw, 600px);
+  background: var(--blanco);
+  border: 3px solid var(--azul);       
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  bottom: 100px;
+  margin: auto auto 20px;
+}
+
+label { 
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+input,button {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.8px solid var(--gris);
+  border-radius: 8px;
+  font-size: 16px;
+  margin: 5px; 
+}
+
+button {
+  background: var(--azul); 
+  color: var(--blanco); 
+  font-weight: 700;
+  border: none;
+}
+button:hover { filter: brightness(1.1) }
+
+table{
+  margin: auto auto;
+}
+
+.error {
+  display: none;
+  color: red;
+  font-size: small;
+  margin-top: 1px;
+}
+.error.mostrar { display: block; }
+
+@media (max-width: 768px) {
+  body{
+    padding-top: 210px;
+  }
+  .contenedor {
+    width: 95%;
+  }
+
+  .formulario {
+    padding: 15px;
+  }
+
+  input, select, button {
+    width: 100%;   
+  }
+}
+
+@media (max-width: 480px) {
+  body{
+    margin: auto auto;
+  }
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
 }

@@ -86,9 +86,18 @@ body{
 }
 
 .right-menu .icon {
+<<<<<<< HEAD
   width: 22px;
   height: 22px;
   border-radius: 100%;
+=======
+    width: 40px;           /* Tamaño fijo */
+    height: 40px;          /* Tamaño fijo */
+    border-radius: 50%;    /* Circular */
+    object-fit: cover;     /* Ajustar imagen sin deformar */
+    border: 2px solid var(--azul);  /* Borde azul */
+    cursor: pointer;
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
 }
 
 .footer{

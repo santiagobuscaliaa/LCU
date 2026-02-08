@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root{
   --fondo: #000;
   --box: #0f0f10;          
@@ -101,3 +102,108 @@ button.rojo:hover {
     width: 100%;
   }
 }
+=======
+:root{
+  --fondo: #000;
+  --box: #0f0f10;          
+  --blanco: #eaeaea;
+  --gris: #9aa0a6;
+  --griso: rgba(255,255,255,0.08);
+  --azul: #0b4b8f;
+}
+
+body {
+  background-color: var(--fondo);   
+  color: var(--blanco);          
+}
+
+.contenedor {
+  width: 600px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  color: var(--blanco);
+  margin-bottom: 20px;
+}
+
+h3 {
+  color: var(--azul);
+  margin-bottom: 10px;
+}
+
+.formulario {
+  background: var(--box);
+  border: 1px solid var(--griso);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: var(--blanco);
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid var(--gris);
+  background: var(--griso) ;
+  color: var(--blanco);
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: var(--azul);
+  color: var(--blanco);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  filter:brightness(1.1);
+}
+
+button.rojo {
+  background: #b30000;
+}
+
+button.rojo:hover {
+  filter: brightness(1.1);
+}
+
+.error {
+  display: none;
+  color: red;
+  font-size: small;
+  margin-top: 5px;
+}
+.error.mostrar { display: block; }
+
+@media (max-width: 768px) {
+  body{
+    padding-top: 240px;
+  }
+  
+  .contenedor {
+    width: 95%;
+  }
+
+  .formulario {
+    padding: 15px;
+  }
+
+  input, select, button {
+    width: 100%;
+  }
+}
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72

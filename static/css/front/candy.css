@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root{
   --fondo: #000;
   --box: #0f0f10;          
@@ -219,4 +220,227 @@ fieldset label {
   .bloque{
     margin-left: auto;
   }
+=======
+:root{
+  --fondo: #000;
+  --box: #0f0f10;          
+  --blanco: #eaeaea;
+  --gris: #9aa0a6;
+  --griso: rgba(255,255,255,0.08);
+  --azul: #0b4b8f;
+}
+
+body {
+  background: var(--fondo);   
+  color: var(--blanco);           
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: var(--blanco);
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 25px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: var(--azul); 
+}
+
+h5 {
+  margin: 5px 0 15px;
+  color: var(--gris);   
+}
+
+.contenedor {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.bloque {
+  background: var(--box);
+  border: 1px solid var(--griso);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  height: auto;
+}
+
+.bloque img {
+  width: auto;
+  height: 170px;                    
+  object-fit: contain;              
+  border: 1px solid var(--griso);
+  margin-bottom: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button,
+input[type="submit"] {
+  background-color: var(--azul);
+  color: var(--blanco);
+  border: none;
+  padding: 8px 12px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  filter: brightness(1.1);
+}
+
+fieldset {
+  border: 1px solid var(--griso);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+
+legend {
+  font-weight: bold;
+  color: var(--azul);
+}
+
+label {
+  margin-right: 10px;
+  color: var(--blanco);
+}
+
+details > summary {
+  list-style: none;           
+  cursor: pointer;
+  background: var(--azul);        
+  color: var(--blanco);
+  font-weight: 700;
+  text-align: center;
+  padding: 10px 12px;
+  border: 1.8px solid var(--azul);
+  border-radius: 8px;
+}
+details[open] > summary {
+  filter: brightness(1.1);
+  margin-bottom: 10px;        
+}
+
+legend {
+  color: var(--gris);             
+  font-weight: 700;
+  padding: 0 6px;
+  text-align: center;
+}
+
+fieldset label { 
+  margin-right: 12px; 
+}
+
+.error{
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.error.mostrar {
+  display: block;
+}
+
+/* Estilo para el botón Ir al Resumen */
+    .boton-resumen {
+        display: inline-block;
+        background-color: #0b4b8f;
+        color: var(--blanco);
+        padding: 12px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    .boton-resumen:hover {
+        background-color: #084080;
+    }
+    
+    
+    /* Ocultar tamaños inicialmente */
+    .tamano-option {
+        display: none;
+    }
+
+     /* Estilo para el botón Limpiar Carrito - ROJO y MÁS PEQUEÑO */
+    .boton-limpiar {
+        display: inline-block;
+        background-color: #d32f2f;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: background-color 0.3s;
+        margin: 10px auto;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .boton-limpiar:hover {
+        background-color: #b71c1c;
+    }
+    
+    .contenedor-boton-resumen {
+        text-align: center;
+        margin: 40px 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    
+
+@media (max-width: 1024px){
+  .contenedor{
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  body{
+    padding-top: 160px;
+  }
+  
+  .contenedor {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+
+  .bloque {
+    width: 90%;              
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px){
+  body{
+    padding-top: 180px;
+  }
+
+  .contenedor{
+    grid-template-columns: 1fr;      
+  }
+
+  .bloque{
+    margin-left: auto;
+  }
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
 }

@@ -4,6 +4,10 @@
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/front/usuario.css') }}">
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
 {% endblock %}
 
 {% block content %}
@@ -22,7 +26,11 @@
     <main class="content">
         <h1 class="content-title">Editar usuario</h1>
         
+<<<<<<< HEAD
         <!-- ✨ MENSAJES FLASH ✨ -->
+=======
+        <!-- MENSAJES FLASH -->
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
@@ -31,20 +39,32 @@
           {% endif %}
         {% endwith %}
 
+<<<<<<< HEAD
         <!-- ✅ FORM con enctype para archivos -->
+=======
+        <!-- FORM con enctype para archivos -->
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
         <form class="form" action="{{ url_for('actualizar_usuario_route') }}" method="POST" enctype="multipart/form-data">
             <h2>Datos personales</h2>
             
             <div class="field">
                 <label for="nombres">Nombres</label>
                 <input id="nombres" name="nombres" type="text" 
+<<<<<<< HEAD
                        value="{{ param.usuario.nombres if param.usuario else '' }}" required>
+=======
+                       value="{{ param.usuario.nombres if param.usuario else session.get('nombres', '') }}" required>
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
             </div>
 
             <div class="field">
                 <label for="apellidos">Apellidos</label>
                 <input id="apellidos" name="apellidos" type="text" 
+<<<<<<< HEAD
                        value="{{ param.usuario.apellidos if param.usuario else '' }}" required>
+=======
+                       value="{{ param.usuario.apellidos if param.usuario else session.get('apellidos', '') }}" required>
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
             </div>
 
             <div class="field">
@@ -58,7 +78,11 @@
             <div class="field">
                 <label for="email">Correo electrónico</label>
                 <input id="email" name="email" type="email" autocomplete="email" 
+<<<<<<< HEAD
                        value="{{ param.usuario.email if param.usuario else '' }}" disabled>
+=======
+                       value="{{ param.usuario.email if param.usuario else session.get('username', '') }}" disabled>
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
             </div>
 
             <div class="field">
@@ -69,10 +93,17 @@
             <div class="field">
                 <label for="telefono">Teléfono</label>
                 <input id="telefono" name="telefono" type="tel" inputmode="tel" 
+<<<<<<< HEAD
                        value="{{ param.usuario.telefono if param.usuario else '' }}" required>
             </div>
 
             <!-- ✅ Avatar DENTRO del form (oculto) -->
+=======
+                       value="{{ param.usuario.telefono if param.usuario else session.get('telefono', '') }}" required>
+            </div>
+
+            <!-- Avatar DENTRO del form (oculto) -->
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
             <input type="file" id="avatar" name="avatar" accept="image/*" hidden>
 
             <div class="boton-container"> 
@@ -85,29 +116,49 @@
     <aside class="sidebar avatar-box">
         <h3 class="sidebar-title">Avatar</h3>
         <div class="avatar-preview">
+<<<<<<< HEAD
             {% if param.usuario and param.usuario.avatar and param.usuario.avatar != '' %}
                 <!-- ✅ Avatar personalizado -->
                 <img id="avatar-img" src="{{ url_for('static', filename='img/avatars/' ~ param.usuario.avatar) }}" alt="Avatar actual">
+=======
+            {# Validar que el avatar sea un archivo de imagen válido #}
+            {% set avatar = param.usuario.avatar if param.usuario else session.get('avatar', '') %}
+            {% if avatar and (avatar.endswith('.jpg') or avatar.endswith('.png') or avatar.endswith('.jpeg') or avatar.endswith('.webp') or avatar.endswith('.gif')) %}
+                <!-- Avatar personalizado válido -->
+                <img id="avatar-img" src="{{ url_for('static', filename='img/avatars/' ~ avatar) }}" alt="Avatar actual">
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
             {% else %}
                 <!-- Avatar por defecto -->
                 <img id="avatar-img" src="{{ url_for('static', filename='img/-usuario.jpg') }}" alt="Avatar actual">
             {% endif %}
         </div>
+<<<<<<< HEAD
         <!-- ✅ Label que activa el input de archivo -->
+=======
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
         <label for="avatar" class="boton">Seleccionar imagen</label>
         <p id="filename" style="font-size: 12px; color: #666; margin-top: 10px;"></p>
     </aside>
 </div>
 
+<<<<<<< HEAD
 <!-- ✨ SCRIPT para preview del avatar -->
+=======
+<!-- SCRIPT para preview del avatar -->
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
 <script>
 document.getElementById('avatar').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
+<<<<<<< HEAD
         // Mostrar nombre del archivo
         document.getElementById('filename').textContent = file.name;
         
         // Preview de la imagen
+=======
+        document.getElementById('filename').textContent = file.name;
+        
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('avatar-img').src = e.target.result;

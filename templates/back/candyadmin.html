@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -89,3 +90,96 @@
     <script src="candyadmin.js"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador de Golosinas</title>
+    <link rel="stylesheet" href="b.css">
+    <link rel="stylesheet" href="candyadmin.css">
+</head>
+<body>
+    <header class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+        <a href="carteleradmin.html">
+            <img src="UUU.png">
+        </a>
+        <span class="admin-span">ADMIN</span>
+        </div>
+
+        <!-- Menú principal -->
+        <div class="main-menu">
+        <ul>
+            <li><a href="carteleradmin.html">Películas</a></li>
+            <li><a href="butadmin.html">Butacas</a></li>
+            <li><a href="reservas.html">Reservas</a></li>
+            <li><a href="candyadmin.html">Candy</a></li>
+        </ul>
+        </div>
+
+        <!-- Opciones a la derecha -->
+        <div class="right-menu">
+         <a href="#">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <div class="box">
+        <h1>Administrador Candy</h1>
+        <h2>Agregar Candy</h2>
+        <form id="addCandyForm" novalidate>
+            <div>
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name">
+                <small id="error-name" class="error"></small>
+            </div>
+            <div>
+                <label for="price">Precio ($):</label>
+                <input type="number" id="price" name="price" min="100" step="100">
+                <small id="error-price" class="error"></small>
+            </div>
+            <div>
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" name="stock" min="0">
+                <small id="error-stock" class="error"></small>
+            </div>
+            <div>
+                <label for="category">Categoría:</label>
+                <select id="category" name="category">
+                    <option value="">Seleccione categoría</option>
+                    <option value="Pochoclos">Pochoclos</option>
+                    <option value="Bebidas">Bebidas</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Combos">Combos</option>
+                    <option value="Otros">Otros</option>
+                </select>
+                <small id="error-category" class="error"></small>
+            </div>
+            <div>
+                <label for="image">Imagen de la golosina:</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                <small id="error-image" class="error"></small>
+            </div>
+            <div>
+                <button type="submit">Agregar Golosina</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 LCU. Contactanos en:</p>
+            <div class="footer-links">
+                <a href="#" ><img src="-inst.png" ></a>
+                <a href="#" ><img src="-x.png" class="x" ></a>
+                <a href="#" ><img src="-mail.png" class="mail" ></a>
+            </div>
+        </div>
+    </footer>
+    <script src="candyadmin.js"></script>
+</body>
+</html>
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72

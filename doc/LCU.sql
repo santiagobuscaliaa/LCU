@@ -26,7 +26,11 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `butaca`
 --
+<<<<<<< HEAD
 TRUNCATE TABLE ;
+=======
+
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
 CREATE TABLE `butaca` (
   `id` int(11) NOT NULL,
   `id_ticket` int(11) NOT NULL,

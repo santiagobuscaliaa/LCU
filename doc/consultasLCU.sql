@@ -138,8 +138,12 @@ from funcion
 inner join precio_formato on funcion.id_formato=precio_formato.id
 where precio_formato.formato ="3D" and funcion.dia="Sabado"
 
+<<<<<<< HEAD
 SELECT*  from funcion
 
 ALTER TABLE usuario
 ADD rol VARCHAR(10) DEFAULT 'cliente'
 CHECK (rol In ('cliente','admin'))
+=======
+SELECT*  from funcion
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72

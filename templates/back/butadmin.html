@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -142,3 +143,149 @@
 </body>
 </html>
 
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrador de Salas</title>
+  <link rel="stylesheet" href="b.css">
+  <link rel="stylesheet" href="butadmin.css">
+</head>
+<body>
+  <header class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+        <a href="carteleradmin.html">
+            <img src="UUU.png">
+        </a>
+        <span class="admin-span">ADMIN</span>
+        </div>
+
+        <!-- Menú principal -->
+        <div class="main-menu">
+        <ul>
+            <li><a href="carteleradmin.html">Películas</a></li>
+            <li><a href="butadmin.html">Butacas</a></li>
+            <li><a href="reservas.html">Reservas</a></li>
+            <li><a href="candyadmin.html">Candy</a></li>
+        </ul>
+        </div>
+
+        <!-- Opciones a la derecha -->
+        <div class="right-menu">
+         <a href="#">Cerrar sesión</a>
+        </div>
+    </header>
+  <div class="contenedor">
+    <h1>Administrador de Salas</h1>
+
+    <div class="formulario">
+      <h3>Administrar Sala</h3>
+      <form>
+        <label for="sala">Nombre de la sala:</label>
+        <input type="text" id="sala" name="sala">
+        <small id="error-sala1" class="error"></small>
+
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha">
+        <small id="error-fecha1" class="error"></small>
+
+        <label for="hora">Horario:</label>
+        <input type="time" id="hora" name="hora">
+        <small id="error-hora1" class="error"></small>
+
+        <button type="submit">Agregar Sala</button>
+      </form>
+    </div>
+
+    <div class="formulario">
+      <h3>Borrar Sala</h3>
+      <form>
+        <label for="sala-borrar">Seleccione sala:</label>
+        <select id="sala-borrar" name="sala-borrar">
+          <option value="">-- Seleccione --</option>
+          <option value="sala1">Sala 1</option>
+          <option value="sala2">Sala 2</option>
+          <option value="sala3">Sala 3</option>
+          <option value="sala4">Sala 4</option>
+          <option value="sala5">Sala 5</option>
+          <option value="sala6">Sala 6</option>
+          <option value="sala7">Sala 7</option>
+          <option value="sala8">Sala 8</option>
+        </select>
+        <small id="error-sala2" class="error"></small>
+
+        <button type="submit" class="rojo">Borrar Sala</button>
+      </form>
+    </div>
+
+    <div class="formulario">
+  <h3>Administrar Butacas</h3>
+  <form>
+    <label for="sala">Sala:</label>
+    <select id="sala" name="sala">
+      <option value="">-- Seleccione --</option>
+          <option value="sala1">Sala 1</option>
+          <option value="sala2">Sala 2</option>
+          <option value="sala3">Sala 3</option>
+          <option value="sala4">Sala 4</option>
+          <option value="sala5">Sala 5</option>
+          <option value="sala6">Sala 6</option>
+          <option value="sala7">Sala 7</option>
+          <option value="sala8">Sala 8</option>
+    </select>
+    <small id="error-sala3" class="error"></small>
+
+    <label for="fila">Fila:</label>
+    <input type="text" id="fila" name="fila" placeholder="Ej: A">
+    <small id="error-fila3" class="error"></small>
+
+    <label for="numero">Número de butaca:</label>
+    <select id="numero" name="numero">
+      <option value="">-- Seleccione --</option>
+      <option value="1">1</option>
+      <option value="2" >2</option>
+      <option value="3">3</option>
+      <option value="4" >4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7" >7</option>
+      <option value="8">8</option>
+      <option value="9" >9</option>
+      <option value="10">10</option>
+      <option value="11" >11</option>
+      <option value="12">12</option>
+    </select>
+    <small id="error-numero3" class="error"></small>
+
+    <label for="fecha-butaca">Fecha:</label>
+    <input type="date" id="fecha-butaca" name="fecha-butaca">
+    <small id="error-fecha3" class="error"></small>
+
+    <label for="hora-butaca">Horario:</label>
+    <input type="time" id="hora-butaca" name="hora-butaca">
+    <small id="error-hora3" class="error"></small>
+
+    <button type="submit">Reservar</button>
+  </form>
+  </div>
+</div>
+  <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 LCU. Contactanos en:</p>
+            <div class="footer-links">
+                <a href="#" ><img src="-inst.png" ></a>
+                <a href="#" ><img src="-x.png" class="x" ></a>
+                <a href="#" ><img src="-mail.png" class="mail" ></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="butadmin.js"></script>
+</body>
+</html>
+
+>>>>>>> 4db93862539253c4412e50824a1a6d8bd0f39a72
