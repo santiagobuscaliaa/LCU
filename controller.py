@@ -1274,7 +1274,9 @@ def ingresoUsuarioValido(param, request):
         Retorna cartelera si login exitoso, sino regresa a login
     '''
     if crearSesion(request):
-        return redirect('/cartelera')
+        if session.get('rol') == 'admin':
+          return redirect('/a')
+       return redirect('/cartelera')
     else:
         param['error_msg_login'] = "Error: Usuario y/o contraseña inválidos"
         return login_pagina(param)
